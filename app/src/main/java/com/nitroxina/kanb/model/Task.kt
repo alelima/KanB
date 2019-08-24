@@ -1,0 +1,41 @@
+package com.nitroxina.kanb.model
+
+data class Task(
+    val id: String,
+    val title: String,
+    val date_creation: String?,
+    val date_due: String?,
+    val project_id: String,
+    val category_id: String?,
+    val color_id: String,
+    val time_spent: String?,
+    val project_name: String,
+    val url: String?,
+    val column_id: String?,
+    val creator_id: String?,
+    val date_completed: String?,
+    val date_modification: String?,
+    val date_moved: String?,
+    val date_started: String?,
+    val description: String?,
+    val external_provider: String?,
+    val external_uri: String?,
+    val is_active: String?,
+    val owner_id: String?,
+    val position: String?,
+    val priority: String?,
+    val recurrence_basedate: String?,
+    val recurrence_child: String?,
+    val recurrence_factor: String?,
+    val recurrence_parent: String?,
+    val recurrence_status: String?,
+    val recurrence_timeframe: String?,
+    val recurrence_trigger: String?,
+    val reference: String?,
+    val score: String?,
+    val swimlane_id: String?,
+    val time_estimated: String?,
+    val color: Color? = null
+) {
+    val subTasks: MutableList<SubTask> = mutableListOf<SubTask>()
+}
