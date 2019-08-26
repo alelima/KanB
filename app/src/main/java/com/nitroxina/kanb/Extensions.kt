@@ -101,3 +101,36 @@ fun JSONObject.toTask() : Task {
         recurrenceFactor, recurrenceParent, recurrenceStatus, recurrenceTimeFrame, recurrenceTrigger, reference,
         score, swimlaneId, timeEstimated)
 }
+
+fun JSONObject.toProfile() : Profile {
+    val id = this.getString("id")
+    val username = this.getString("username")
+    val email = this.optString("email")
+    val name = this.optString("name")
+    val apiAccessToken = this.optString("api_access_token")
+    val avatarPath = this.optString("avatar_path")
+    val disableLoginForm = this.optString("disable_login_form")
+    val filter = this.optString("filter")
+    val githubId = this.optString("github_id")
+    val gitlabId = this.optString("gitlab_id")
+    val googleId = this.optString("google_id")
+    val isActive = this.optString("is_active")
+    val isLdapUser = this.optBoolean("is_ldap_user")
+    val language = this.optString("language")
+    val lockExpirationDate = this.optString("lock_expiration_date")
+    val nbFailedLogin = this.optString("nb_failed_login")
+    val notificationsEnabled = this.optString("notifications_enabled")
+    val notificationsFilter = this.optString("notifications_filter")
+    val role = this.optString("role")
+    val timezone = this.optString("timezone")
+    val token = this.optString("token")
+    val twofactorActivated = this.optBoolean("twofactor_activated")
+    val twofactorSecret = this.optString("twofactor_secret")
+
+    return Profile(id, username, email, name, apiAccessToken, avatarPath, disableLoginForm,
+        filter, githubId, gitlabId, googleId, isActive, isLdapUser, language, lockExpirationDate,
+        nbFailedLogin, notificationsEnabled, notificationsFilter, role, timezone,
+        token, twofactorActivated, twofactorSecret)
+}
+
+

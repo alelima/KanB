@@ -1,10 +1,13 @@
 package com.nitroxina.kanb.online
 
+import android.util.Base64
 import com.nitroxina.kanb.getKBResponse
 import com.nitroxina.kanb.kanboardApi.KB_URL
 import com.nitroxina.kanb.model.KBResponse
 import okhttp3.*
 import org.json.JSONObject
+
+
 
 object KBClient {
     val authenticator: Authenticator
@@ -16,10 +19,22 @@ object KBClient {
                 if (response.request().header("Authorization") != null) {
                     return null // Give up, we've already attempted to authenticate.
                 }
-                val credential = Credentials.basic("admin", "admin")
+
+                val apiToken = "083d0489d4c640910b1285a3f2c0842a15a7d10fc1fbee38aeb01c1b8416"
+                val user = "jsonrpc"
+                val userApiToken = arrayOf(user, apiToken).joinToString(":")
+                val xApiAuthTokenBytes = userApiToken.toByteArray(charset("utf-8"))
+                val xApiAuthToken = Base64.encodeToString(xApiAuthTokenBytes, Base64.NO_WRAP)
+
+//                val credential = Credentials.basic("admin", "admin")
+                val credential = Credentials.basic("admin", apiToken)
                 return response.request().newBuilder()
                     .header("Authorization", credential)
                     .build()
+//                return response.request().newBuilder()
+//                    .header("X-API-Auth", xApiAuthToken)
+//                    .build()
+
             }
         }
         okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()

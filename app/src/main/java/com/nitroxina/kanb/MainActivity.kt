@@ -22,11 +22,13 @@ import okhttp3.Route
 
 class MainActivity : AppCompatActivity() {
 
-    private val fragments = mapOf(PROJECT_LIST_FRAGMENT to ::ProjectListFragment, TASK_LIST_FRAGMENT to ::TasksListFragment)
+    private val fragments = mapOf(PROJECT_LIST_FRAGMENT to ::ProjectListFragment,
+        TASK_LIST_FRAGMENT to ::TasksListFragment, PROFILE_FRAGMENT to ::ProfileFragment)
 
     companion object {
         val PROJECT_LIST_FRAGMENT = "projectListFragment"
         val TASK_LIST_FRAGMENT = "taskListFragment"
+        val PROFILE_FRAGMENT = "profileFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.menuitem_projects -> navigateTo(PROJECT_LIST_FRAGMENT)
                 R.id.menuitem_tasks -> navigateTo(TASK_LIST_FRAGMENT)
+                R.id.menuitem_perfil -> navigateTo(PROFILE_FRAGMENT)
             }
             true
         }

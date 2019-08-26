@@ -3,4 +3,7 @@
     <string name="menu_projects">Meus Projetos</string>
     <string name="menu_tasks">Minhas Tarefas</string>
     <string name="menu_perfil">Meu Perfil</string>
+    <string name="profile_resume">Resumo</string>
+    <string name="profile_user">Usuário:</string>
+    <string name="profile_name">Nome:</string>
 </resources>
