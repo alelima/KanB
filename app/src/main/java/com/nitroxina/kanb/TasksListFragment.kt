@@ -8,8 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.nitroxina.kanb.online.ProjectAdapter
-import com.nitroxina.kanb.online.TaskAdapter
+import com.nitroxina.kanb.adapter.TaskAdapter
 
 class TasksListFragment : Fragment() {
     override fun onCreateView(

@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.nitroxina.kanb.online.ProjectAdapter
+import com.nitroxina.kanb.adapter.ProjectAdapter
 
 class ProjectListFragment : Fragment() {
 
@@ -36,6 +36,7 @@ class ProjectListFragment : Fragment() {
         val listView = rootView.findViewById<RecyclerView>(R.id.project_list)
         listView.layoutManager = viewManager
         listView.adapter = viewAdapter
+
         return viewAdapter
     }
 }

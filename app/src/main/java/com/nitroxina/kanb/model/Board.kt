@@ -1,4 +1,5 @@
 package com.nitroxina.kanb.model
 
-class Board {
-}
+data class Board(
+    val swimlanes: MutableList<Swimlane> = mutableListOf()
+)

@@ -27,9 +27,27 @@ fun JSONObject.toColumn() : Column {
     val projectId = this.optString("project_id")
     val taksLimit = this.optString("task_limit")
     val description = this.optString("description")
-    val nbTasks = this.getInt("nb_tasks")
+    val nbTasks = this.optInt("nb_tasks")
+    val columnNbScore = this.optInt("column_nb_score")
+    val columnNbTasks = this.optInt("column_nb_tasks")
+    val columnScore = this.optInt("column_score")
+    val hideInDashboard= this.optString("hide_in_dashboard")
+    val score = this.optInt("score")
+    val tasks = this.optString("tasks")
 
-    return Column(id, title, description, nbTasks, position, projectId, taksLimit)
+    val column = Column(id, title, description, nbTasks, position, projectId, taksLimit, columnNbScore, columnNbTasks,
+        columnScore, hideInDashboard, score)
+
+    if(tasks != null) {
+        val tasksArray = JSONArray(tasks)
+        for(i in 1..tasksArray.length()){
+            val jsonObject = tasksArray[i-1] as JSONObject
+            val task = jsonObject.toTask()
+            column.tasks.add(task)
+        }
+    }
+
+    return column
 }
 
 fun JSONObject.toProject() : Project {
@@ -132,5 +150,43 @@ fun JSONObject.toProfile() : Profile {
         nbFailedLogin, notificationsEnabled, notificationsFilter, role, timezone,
         token, twofactorActivated, twofactorSecret)
 }
+
+fun JSONArray.toBoard() : Board {
+    val board = Board()
+    for(i in 1..this.length()){
+        val jsonObject = this[i-1] as JSONObject
+        val swimlane = jsonObject.toSwimlane()
+        board.swimlanes.add(swimlane)
+    }
+    return board
+}
+
+private fun JSONObject.toSwimlane(): Swimlane {
+    val id = this.getString("id")
+    val name = this.getString("id")
+    val description = this.optString("description")
+    val is_active = this.optString("is_active")
+    val nb_columns = this.optInt("nb_columns")
+    val nb_swimlanes = this.optInt("nb_swimlanes")
+    val nb_tasks = this.optInt("nb_tasks")
+    val position = this.optString("position")
+    val project_id = this.optString("project_id")
+    val score = this.optInt("score")
+
+    val swimlane = Swimlane(id, name, description, is_active, nb_columns, nb_swimlanes,
+        nb_tasks, position, project_id, score)
+
+    val columns = this.optString("columns")
+    if (columns != null) {
+        val columnsArray = JSONArray(columns)
+        for(i in 1..columnsArray.length()){
+            val jsonObject = columnsArray[i-1] as JSONObject
+            val column = jsonObject.toColumn()
+            swimlane.columns.add(column)
+        }
+    }
+    return swimlane
+}
+
 
 

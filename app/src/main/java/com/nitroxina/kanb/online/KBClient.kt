@@ -40,9 +40,13 @@ object KBClient {
         okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()
     }
 
-    fun execute(nameMethod: String) : KBResponse {
+    fun execute(nameMethod: String, params: String? = null) : KBResponse {
         val JSON = MediaType.parse("application/json; charset=utf-8")
-        val jsonString = "{\"jsonrpc\": \"2.0\", \"method\": \"$nameMethod\", \"id\": 2}"
+        var paramStr = "}"
+        if(params != null) {
+            paramStr = ", \"params\": $params }"
+        }
+        val jsonString = "{\"jsonrpc\": \"2.0\", \"method\": \"$nameMethod\", \"id\": 2 $paramStr"
         val body = RequestBody.create(JSON, jsonString)
 
         val request = Request.Builder()

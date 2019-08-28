@@ -1,5 +1,7 @@
 package com.nitroxina.kanb.model
 
+import java.io.Serializable
+
 data class Project(
     val id: String,
     val name: String,
@@ -23,5 +25,4 @@ data class Project(
     val priority_end: String? = null,
     val priority_start: String? = null,
     val start_date: String? = null
-
-)
+) : Serializable

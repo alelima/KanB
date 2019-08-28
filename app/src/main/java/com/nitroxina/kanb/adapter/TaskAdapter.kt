@@ -1,4 +1,4 @@
-package com.nitroxina.kanb.online
+package com.nitroxina.kanb.adapter
 
 import android.graphics.Color
 import android.os.AsyncTask
@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.nitroxina.kanb.R
 import com.nitroxina.kanb.kanboardApi.GET_MY_DASHBOARD
 import com.nitroxina.kanb.model.Task
+import com.nitroxina.kanb.online.KBClient
 import com.nitroxina.kanb.toTask
 import org.json.JSONArray
 import org.json.JSONObject
