@@ -4,23 +4,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
-                android:id="@+id/task_id"
-                android:layout_alignStart="@+id/linearLayout" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"
-                android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
-                android:id="@+id/task_title"
-                app:layout_constraintStart_toEndOf="@+id/task_id" android:layout_marginStart="8dp"
-                android:layout_alignBottom="@+id/linearLayout"
-                app:layout_constraintTop_toTopOf="parent"/>
-    </android.support.constraint.ConstraintLayout>
+        <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp" android:id="@+id/task_card"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:clickable="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout">
+
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
+                        android:id="@+id/task_id"
+                        android:layout_alignStart="@+id/linearLayout" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"
+                        android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
+                        android:id="@+id/task_title"
+                        app:layout_constraintStart_toEndOf="@+id/task_id" android:layout_marginStart="8dp"
+                        android:layout_alignBottom="@+id/linearLayout"
+                        app:layout_constraintTop_toTopOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
 </RelativeLayout>

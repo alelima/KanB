@@ -1,5 +1,6 @@
 package com.nitroxina.kanb.model
 
+import com.nitroxina.kanb.kanboardApi.KBRole
 import java.io.Serializable
 
 data class Project(
@@ -24,5 +25,6 @@ data class Project(
     val priority_default: String? = null,
     val priority_end: String? = null,
     val priority_start: String? = null,
-    val start_date: String? = null
-) : Serializable
+    val start_date: String? = null,
+    var role : KBRole? = null
+) : Serializable 

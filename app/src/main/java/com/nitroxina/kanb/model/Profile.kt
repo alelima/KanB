@@ -1,5 +1,7 @@
 package com.nitroxina.kanb.model
 
+import java.io.Serializable
+
 data class Profile(
     val id: String,
     val username: String,
@@ -24,4 +26,4 @@ data class Profile(
     val token: String,
     val twofactor_activated: Boolean,
     val twofactor_secret: String
-)
+) : Serializable

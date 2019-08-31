@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
                                                  android:layout_height="wrap_content"
                                                  android:id="@+id/linearLayout">
@@ -20,5 +20,5 @@
                 android:layout_marginTop="16dp" android:id="@+id/project_name"
                 app:layout_constraintStart_toEndOf="@+id/project_id" android:layout_marginStart="8dp"
         />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

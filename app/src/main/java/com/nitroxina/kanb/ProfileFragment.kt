@@ -2,7 +2,7 @@ package com.nitroxina.kanb
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,25 +19,12 @@ class ProfileFragment : Fragment(){
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         rootView = inflater.inflate(R.layout.profile_layout, null)
-        getProfile()
+        val profile = arguments?.get("profile") as Profile
+        profile?.let { updateView(it) }
         return rootView
     }
 
-    fun getProfile() {
-        object: AsyncTask<Void, Void, Profile>(){
-            override fun doInBackground(vararg params: Void?) : Profile {
-                val kbResponse = KBClient.execute(GET_ME)
-                val jsonObj = JSONObject(kbResponse.result)
-                return jsonObj.toProfile()
-            }
-
-            override fun onPostExecute(profile: Profile) {
-                this@ProfileFragment.updateView(profile)
-            }
-        }.execute()
-    }
-
-    fun updateView(profile: Profile) {
+    private fun updateView(profile: Profile) {
         this.rootView.apply {
             findViewById<TextView>(R.id.profile_user_value).text = profile.username
             findViewById<TextView>(R.id.profile_name_value).text = profile.name

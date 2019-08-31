@@ -2,7 +2,7 @@ package com.nitroxina.kanb.adapter
 
 import android.content.Intent
 import android.os.AsyncTask
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +10,22 @@ import android.widget.AdapterView
 import android.widget.TextView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.R
+import com.nitroxina.kanb.kanboardApi.GET_BOARD
 import com.nitroxina.kanb.kanboardApi.GET_MY_PROJECTS_LIST
+import com.nitroxina.kanb.kanboardApi.GET_PROJECT_USER_ROLE
+import com.nitroxina.kanb.kanboardApi.KBRole
 import com.nitroxina.kanb.model.Board
+import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.online.KBClient
+import org.json.JSONArray
 import org.json.JSONObject
 
-class ProjectAdapter :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder> {
+class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder>() {
 
     lateinit var listener: AdapterView.OnItemClickListener
 
-    constructor() : super(){
+    init {
         loadList()
     }
 
@@ -39,8 +44,12 @@ class ProjectAdapter :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder> {
                 this@ProjectAdapter.list = mutableListOf<Project>()
                 keysList.forEach {
                     val id = it
+                    val userId = this@ProjectAdapter.profile.id
+                    val role = loadRole(id, userId)
+                    //pegar a role do projeto aqui id projeto + id user
                     val name = jsonObject.getString(id)
                     val project = Project(id, name)
+                    project.role = role
                     list.add(project)
                 }
             }
@@ -49,6 +58,12 @@ class ProjectAdapter :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder> {
                 callback()
             }
         }.execute()
+    }
+
+    private fun loadRole(id: String?, userId: String) : KBRole? {
+        val parameters = "[$id, $userId]"
+        val kbResponse = KBClient.execute(GET_PROJECT_USER_ROLE, parameters)
+        return KBRole.getKBRoleByValue(kbResponse.result)
     }
 
     override fun getItemCount(): Int = this.list.size

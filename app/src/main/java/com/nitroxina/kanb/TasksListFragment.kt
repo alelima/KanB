@@ -1,10 +1,10 @@
 package com.nitroxina.kanb
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +31,7 @@ class TasksListFragment : Fragment() {
 
     private fun configureList(rootView: View): TaskAdapter {
         val viewManager = LinearLayoutManager(activity!!)
-        val viewAdapter = TaskAdapter()
+        val viewAdapter = TaskAdapter(activity!!)
         val listView = rootView.findViewById<RecyclerView>(R.id.task_list)
         listView.layoutManager = viewManager
         listView.adapter = viewAdapter
