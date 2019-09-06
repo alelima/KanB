@@ -63,7 +63,10 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
     private fun loadRole(id: String?, userId: String) : KBRole? {
         val parameters = "[$id, $userId]"
         val kbResponse = KBClient.execute(GET_PROJECT_USER_ROLE, parameters)
-        return KBRole.getKBRoleByValue(kbResponse.result)
+        if(!kbResponse.successful) {
+            // TODO: Se deu erro tratar aqui
+        }
+        return KBRole.getKBRoleByValue(kbResponse.result!!)
     }
 
     override fun getItemCount(): Int = this.list.size

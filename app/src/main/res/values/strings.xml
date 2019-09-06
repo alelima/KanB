@@ -6,4 +6,13 @@
     <string name="profile_resume">Resumo</string>
     <string name="profile_user">Usuário:</string>
     <string name="profile_name">Nome:</string>
+    <string name="task_assignee">Designação</string>
+    <string name="task_category">Categoria</string>
+    <string name="task_priority">Prioridade</string>
+    <string name="task_title">Título</string>
+    <string name="task_description">Descrição</string>
+    <string name="task_button_color">Cor</string>
+    <string name="pick_a_color">Escolha uma cor</string>
+    <string name="task_new">Nova Tarefa</string>
+    <string name="task_button_save">Salvar</string>
 </resources>

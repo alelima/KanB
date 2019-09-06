@@ -1,6 +1,7 @@
 package com.nitroxina.kanb
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.nitroxina.kanb.kanboardApi.*
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.online.KBClient
+import dev.sasikanth.colorsheet.ColorSheet
 import okhttp3.*
 import okhttp3.Route
 import org.json.JSONObject
@@ -19,12 +21,14 @@ class MainActivity : AppCompatActivity() {
     private var profile: Profile? = null
 
     private val fragments = mapOf(PROJECT_LIST_FRAGMENT to ::ProjectListFragment,
-        TASK_LIST_FRAGMENT to ::TasksListFragment, PROFILE_FRAGMENT to ::ProfileFragment)
+        TASK_LIST_FRAGMENT to ::TasksListFragment, PROFILE_FRAGMENT to ::ProfileFragment,
+        EDIT_TASK_FORM_FRAGMENT to ::EditTaskDialogFragment)
 
     companion object {
         val PROJECT_LIST_FRAGMENT = "projectListFragment"
         val TASK_LIST_FRAGMENT = "taskListFragment"
         val PROFILE_FRAGMENT = "profileFragment"
+        val EDIT_TASK_FORM_FRAGMENT = "editTaskFormFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +76,9 @@ class MainActivity : AppCompatActivity() {
             object : AsyncTask<Void, Void, Profile>() {
                 override fun doInBackground(vararg params: Void?): Profile {
                     val kbResponse = KBClient.execute(GET_ME)
+                    if(!kbResponse.successful) {
+                        //TODO tratar erro aqui
+                    }
                     val jsonObj = JSONObject(kbResponse.result)
                     return jsonObj.toProfile()
                 }

@@ -4,7 +4,7 @@ import android.animation.ValueAnimator
 import com.google.android.material.card.MaterialCardView
 
 
-fun MaterialCardView.scaleView(height : Int) {
+fun MaterialCardView.scaleHeight(height: Int) {
     val anim = ValueAnimator.ofInt(
         this.measuredHeightAndState,
         height

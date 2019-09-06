@@ -3,7 +3,6 @@ package com.nitroxina.kanb.online
 import android.util.Base64
 import com.nitroxina.kanb.getKBResponse
 import com.nitroxina.kanb.kanboardApi.KB_URL
-import com.nitroxina.kanb.model.KBResponse
 import okhttp3.*
 import org.json.JSONObject
 
@@ -20,7 +19,7 @@ object KBClient {
                     return null // Give up, we've already attempted to authenticate.
                 }
 
-                val apiToken = "083d0489d4c640910b1285a3f2c0842a15a7d10fc1fbee38aeb01c1b8416"
+                val apiToken = "bcf303534f3653a106ccf8583b63b863c0885fea1b8a0a1e96e5ff71a343"
                 val user = "jsonrpc"
                 val userApiToken = arrayOf(user, apiToken).joinToString(":")
                 val xApiAuthTokenBytes = userApiToken.toByteArray(charset("utf-8"))
@@ -44,9 +43,9 @@ object KBClient {
         val JSON = MediaType.parse("application/json; charset=utf-8")
         var paramStr = "}"
         if(params != null) {
-            paramStr = ", \"params\": $params }"
+            paramStr = ", \"params\": $params}"
         }
-        val jsonString = "{\"jsonrpc\": \"2.0\", \"method\": \"$nameMethod\", \"id\": 2 $paramStr"
+        val jsonString = "{\"jsonrpc\" : \"2.0\", \"method\": \"$nameMethod\", \"id\": 2 ${paramStr}"
         val body = RequestBody.create(JSON, jsonString)
 
         val request = Request.Builder()

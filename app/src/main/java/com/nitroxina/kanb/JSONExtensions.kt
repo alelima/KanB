@@ -1,15 +1,27 @@
 package com.nitroxina.kanb
 
 import com.nitroxina.kanb.model.*
+import com.nitroxina.kanb.online.KBError
+import com.nitroxina.kanb.online.KBResponse
 import org.json.JSONArray
 import org.json.JSONObject
 
 fun JSONObject.getKBResponse() : KBResponse {
-    var id = this.getInt("id")
+    var id = this.optInt("id")
     var jsonrpc = this.getString("jsonrpc")
-    var result = this.getString("result")
+    var result = this.optString("result")
+    var kbError: KBError? = null
+    if(result == null || result.isEmpty()) {
+        var error = ""
+        error = this.optString("error")
+        error?.let {
 
-    return KBResponse(id, jsonrpc, result)
+            var jsonObject = JSONObject(it)
+            kbError = KBError(jsonObject.optString("code"), jsonObject.optString("message"))
+        }
+    }
+
+    return KBResponse(id, jsonrpc, result, kbError)
 }
 
 fun JSONObject.toUrl() : Url {
@@ -83,7 +95,7 @@ fun JSONObject.toTask() : Task {
     val dateCreation = this.optString("date_creation")
     val dateDue = this.optString("date_due")
     val projectId = this.optString("project_id")
-    val categoryId = this.optString("category_id")
+    val categoryId = this.optInt("category_id")
     val colorId = this.optString("color_id")
     val timeSpent = this.optString("time_spent")
     val projectName = this.optString("project_name")
@@ -98,9 +110,9 @@ fun JSONObject.toTask() : Task {
     val externalProvider = this.optString("external_provider")
     val externalUri = this.optString("external_uri")
     val isActive = this.optString("is_active")
-    val ownerId = this.optString("owner_id")
+    val ownerId = this.optInt("owner_id")
     val position = this.optString("position")
-    val priority = this.optString("priority")
+    val priority = this.optInt("priority")
     val recurrenceBasedate = this.optString("recurrence_basedate")
     val recurrenceChild = this.optString("recurrence_child")
     val recurrenceFactor = this.optString("recurrence_factor")
@@ -109,7 +121,7 @@ fun JSONObject.toTask() : Task {
     val recurrenceTimeFrame = this.optString("recurrence_timeframe")
     val recurrenceTrigger = this.optString("recurrence_trigger")
     val reference = this.optString("reference")
-    val score = this.optString("score")
+    val score = this.optInt("score")
     val swimlaneId = this.optString("swimlane_id")
     val timeEstimated = this.optString("time_estimated")
 
@@ -187,6 +199,7 @@ private fun JSONObject.toSwimlane(): Swimlane {
     }
     return swimlane
 }
+
 
 
 

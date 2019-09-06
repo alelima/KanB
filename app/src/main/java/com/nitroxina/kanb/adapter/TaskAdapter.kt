@@ -15,20 +15,18 @@ import com.nitroxina.kanb.online.KBClient
 import com.nitroxina.kanb.toTask
 import org.json.JSONArray
 import org.json.JSONObject
-import android.util.DisplayMetrics
-import android.content.Context
-import android.view.WindowManager
 import android.view.ViewTreeObserver
-import com.nitroxina.kanb.scaleView
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.button.MaterialButton
+import com.nitroxina.kanb.EditTaskDialogFragment
+import com.nitroxina.kanb.MainActivity
+import com.nitroxina.kanb.scaleHeight
+import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 
-class TaskAdapter(context: Context?) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-    private val windowHeight : Int
+class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private val expandHeight : Int = 520
 
     init {
-        val windowmanager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val dimension = DisplayMetrics()
-        windowmanager.defaultDisplay.getMetrics(dimension)
-        windowHeight = dimension.heightPixels
         loadList()
     }
 
@@ -61,15 +59,15 @@ class TaskAdapter(context: Context?) : RecyclerView.Adapter<TaskAdapter.TaskView
     override fun getItemCount(): Int = this.list.size
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        if(this.list != null && !this.list.isEmpty()){
+        if(this.list.isNotEmpty()){
             (holder.taskItemView as ViewGroup).apply {
                 val task = this@TaskAdapter.list[position]
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_title).text = task.title
-                findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = task.id
+                findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "# ${task.id}"
+                findViewById<View>(com.nitroxina.kanb.R.id.line_color).setBackgroundColor(Color.parseColor(task.color_id))
 
                 var minHeight = 0
                 val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
-                card.setBackgroundColor(Color.parseColor(task.color_id!!))
                 @TargetApi(21)
                 card.elevation = 4.0f
                 card.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
@@ -84,13 +82,27 @@ class TaskAdapter(context: Context?) : RecyclerView.Adapter<TaskAdapter.TaskView
                 })
                 card.setOnClickListener {
                     it as MaterialCardView
-                    if (it.height === minHeight) { //if is collapsed
-                        it.scaleView(windowHeight)
+                    if (it.height == minHeight) { //if is collapsed
+                        it.scaleHeight(expandHeight)
                     } else {
-                        it.scaleView(minHeight)
+                        it.scaleHeight(minHeight)
                     }
                 }
+
+                val buttonEdit = findViewById<MaterialButton>(com.nitroxina.kanb.R.id.edit_task_button)
+                buttonEdit.setOnClickListener {
+                    openTaskForEdition(holder.taskItemView, task)
+                }
             }
+        }
+    }
+
+    private fun openTaskForEdition(taskItemView: ViewGroup, task: Task) {
+        val context = taskItemView.context
+        if (context is MainActivity) {
+            val taskViewModel = ViewModelProviders.of(context).get(EditTaskViewModel::class.java)
+            taskViewModel.dataTask.value = task
+            EditTaskDialogFragment().show(context.supportFragmentManager, "edit_dialog")
         }
     }
 

@@ -12,7 +12,8 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
-                android:clickable="true">
+                android:clickable="true"
+                android:focusable="true">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -20,20 +21,57 @@
                         android:id="@+id/linearLayout">
 
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
-                        android:id="@+id/task_id"
-                        android:layout_alignStart="@+id/linearLayout" app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"
-                        android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"/>
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:layout_alignTop="@+id/linearLayout"
-                        android:id="@+id/task_title"
-                        app:layout_constraintStart_toEndOf="@+id/task_id" android:layout_marginStart="8dp"
-                        android:layout_alignBottom="@+id/linearLayout"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        <View
+                                android:id="@+id/line_color"
+                                android:layout_width="5dp"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                                android:id="@+id/task_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignStart="@+id/linearLayout"
+                                android:layout_alignTop="@+id/linearLayout"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="@font/roboto"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                        <TextView
+                                android:id="@+id/task_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignTop="@+id/linearLayout"
+                                android:layout_alignBottom="@+id/linearLayout"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="@font/roboto"
+                                android:textSize="16sp"
+                                app:layout_constraintStart_toEndOf="@+id/task_id"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/edit_task_button"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginEnd="16dp"
+                                app:icon="@drawable/icon_edit_task"
+                                app:iconGravity="textStart"
+                                app:iconSize="14dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
