@@ -1,45 +1,66 @@
 package com.nitroxina.kanb.model
 
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
-data class Task(
-    val id: String,
+class Task(
     var title: String,
-    val date_creation: String?,
-    var date_due: String?,
     val project_id: String,
-    var category_id: Int?,
-    var color_id: String,
-    val time_spent: String?,
-    val project_name: String,
-    val url: String?,
-    val column_id: String?,
-    val creator_id: String?,
-    val date_completed: String?,
-    val date_modification: String?,
-    val date_moved: String?,
-    val date_started: String?,
-    val description: String?,
-    val external_provider: String?,
-    val external_uri: String?,
-    val is_active: String?,
-    val owner_id: Int?,
-    val position: String?,
-    val priority: Int?,
-    val recurrence_basedate: String?,
-    val recurrence_child: String?,
-    val recurrence_factor: String?,
-    val recurrence_parent: String?,
-    val recurrence_status: String?,
-    val recurrence_timeframe: String?,
-    val recurrence_trigger: String?,
-    val reference: String?,
-    val score: Int?,
-    val swimlane_id: String?,
-    val time_estimated: String?,
+    val id: String? = null,
+    val date_creation: String? = null,
+    _date_due: String? = null,
+    var category_id: Int? = null,
+    var color_id: String? = null,
+    val time_spent: String? = null,
+    var project_name: String? = null,
+    val url: String? = null,
+    var column_id: String? = null,
+    val creator_id: String? = null,
+    val date_completed: String? = null,
+    val date_modification: String? = null,
+    val date_moved: String? = null,
+    _date_started: String? = null,
+    val description: String? = null,
+    val external_provider: String? = null,
+    val external_uri: String? = null,
+    val is_active: String? = null,
+    var owner_id: Int? = null,
+    val position: String? = null,
+    var priority: Int? = null,
+    val recurrence_basedate: String? = null,
+    val recurrence_child: String? = null,
+    val recurrence_factor: String? = null,
+    val recurrence_parent: String? = null,
+    val recurrence_status: String? = null,
+    val recurrence_timeframe: String? = null,
+    val recurrence_trigger: String? = null,
+    val reference: String? = null,
+    val score: Int? = null,
+    val swimlane_id: String? = null,
+    val time_estimated: String? = null,
     val color: Color? = null
 ) {
     val subTasks: MutableList<SubTask> = mutableListOf<SubTask>()
+    var date_started: String? = null
+        set(value) {
+            if(!value.isNullOrBlank()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            }
+        }
+    var date_due: String? = null
+        set(value) {
+            if(!value.isNullOrBlank()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            }
+        }
+
+    init {
+        date_started = _date_started
+        date_due = _date_due
+    }
 
     fun toJsonParameters(): String? {
         var json = "{\"id\": ${this.id}, \"title\": \"${this.title}\""

@@ -79,7 +79,9 @@ fun JSONObject.toProject() : Project {
     val jsonArrayColumn = JSONArray(columns)
     for(i in 1..jsonArrayColumn.length()){
         val jsonObject = jsonArrayColumn[i-1] as JSONObject
-        columnList.add(jsonObject.toColumn())
+        var column = jsonObject.toColumn()
+        column.project_name  = name
+        columnList.add(column)
     }
     val urlJson = this.optString("url")
     val url = JSONObject(urlJson).toUrl()
@@ -125,7 +127,7 @@ fun JSONObject.toTask() : Task {
     val swimlaneId = this.optString("swimlane_id")
     val timeEstimated = this.optString("time_estimated")
 
-    return Task(id, title, dateCreation, dateDue, projectId, categoryId, colorId, timeSpent, projectName, url,
+    return Task(title, projectId, id, dateCreation, dateDue, categoryId, colorId, timeSpent, projectName, url,
         columnId, creatorId, dateCompleted, dateModification, dateMoved, dateStarted, description,
         externalProvider, externalUri, isActive, ownerId, position, priority, recurrenceBasedate, recurrenceChild,
         recurrenceFactor, recurrenceParent, recurrenceStatus, recurrenceTimeFrame, recurrenceTrigger, reference,
@@ -173,9 +175,9 @@ fun JSONArray.toBoard() : Board {
     return board
 }
 
-private fun JSONObject.toSwimlane(): Swimlane {
+fun JSONObject.toSwimlane(): Swimlane {
     val id = this.getString("id")
-    val name = this.getString("id")
+    val name = this.getString("name")
     val description = this.optString("description")
     val is_active = this.optString("is_active")
     val nb_columns = this.optInt("nb_columns")
@@ -199,6 +201,15 @@ private fun JSONObject.toSwimlane(): Swimlane {
     }
     return swimlane
 }
+
+fun JSONObject.toCategory(): Category {
+    val id = this.getString("id")
+    val name = this.getString("name")
+    val projectId = this.optString("project_id")
+
+    return Category(id, name, projectId)
+}
+
 
 
 

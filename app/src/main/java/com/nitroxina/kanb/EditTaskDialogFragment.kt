@@ -7,77 +7,156 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
-import com.nitroxina.kanb.kanboardApi.GET_MY_DASHBOARD
+import com.nitroxina.kanb.adapter.ItemDropdown
+import com.nitroxina.kanb.adapter.ItemDropdownAdapter
+import com.nitroxina.kanb.kanboardApi.GET_ALL_CATEGORIES
+import com.nitroxina.kanb.kanboardApi.GET_ASSIGNABLE_USERS
 import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
+import com.nitroxina.kanb.model.AssignableUser
+import com.nitroxina.kanb.model.Category
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.online.KBClient
+import com.nitroxina.kanb.viewcomponents.DateHourMask
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
 import dev.sasikanth.colorsheet.ColorSheet
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.util.*
 
 class EditTaskDialogFragment() : DialogFragment() {
 
+    private lateinit var task: Task
+    private lateinit var categoryList: MutableList<Category>
+    private lateinit var assigUserList: MutableList<AssignableUser>
+    private lateinit var rootView: View
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        val rootView = inflater.inflate(R.layout.task_new_edit_form_layout, null)
-        populateView(rootView)
+        rootView = inflater.inflate(R.layout.task_new_edit_form_layout, null)
+        task = ViewModelProviders.of(activity!!).get(EditTaskViewModel::class.java).dataTask.value!!
+        populateView()
         return rootView
     }
 
-    private fun populateView(view: View) {
-        val task = ViewModelProviders.of(activity!!).get(EditTaskViewModel::class.java).dataTask.value
+    private fun populateView() {
+        loadAssignableUsers()
+        loadCategories()
+        populatePriorities()
+        configColorButton()
+        configDatePick()
 
-        val categories = arrayOf("Urgente", "Defeito", "Melhoria")
-        val arrayAdapterCategory = ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, categories)
-        val categoriesDropdown = view.findViewById<MaterialBetterSpinner>(R.id.spinner_category)
-        categoriesDropdown.setAdapter(arrayAdapterCategory)
+        val dialogTitle = if (task?.title?.isNullOrEmpty()) { getString(R.string.task_new) } else { task?.title }
+        rootView.findViewById<MaterialTextView>(R.id.text_view_title).text = "${task?.project_name} > $dialogTitle"
 
-        val assignees = arrayOf("Alessandro", "Sarah", "Perseu")
-        val arrayAdapterAssignee = ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, assignees)
-        val assigneeSpinnerDropdown  = view.findViewById<MaterialBetterSpinner>(R.id.spinner_assignee)
-        assigneeSpinnerDropdown.setAdapter(arrayAdapterAssignee)
-
-        val priorities = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-        val arrayAdapterPriority = ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, priorities)
-        val prioritySpinnerDropdown  = view.findViewById<MaterialBetterSpinner>(R.id.spinner_priority)
-        prioritySpinnerDropdown.setAdapter(arrayAdapterPriority)
-
-        val dialogTitle = getString(R.string.task_new)
-        view.findViewById<MaterialTextView>(R.id.text_view_title).text = "${task?.project_name} > $dialogTitle"
-
-
-        val saveButton = view.findViewById<MaterialButton>(R.id.save_button)
+        val saveButton = rootView.findViewById<MaterialButton>(R.id.save_button)
         saveButton.setOnClickListener {
-            updateTask(task)
+            if(task?.id == null) {
+
+            } else {
+                updateTask(task)
+            }
         }
 
-        val colorButton = view.findViewById<MaterialButton>(R.id.color_button)
+        if(task?.id != null) {
+            rootView.findViewById<TextInputEditText>(R.id.task_title).setText(task!!.title)
+            rootView.findViewById<TextInputEditText>(R.id.task_description).setText(task!!.description)
+            rootView.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(task!!.color_id))
+            rootView.findViewById<TextInputEditText>(R.id.date_start).setText(task!!.date_started)
+            rootView.findViewById<TextInputEditText>(R.id.date_due).setText(task!!.date_due)
+
+        }
+    }
+
+    private fun configDatePick() {
+        val dateStartTextInput = rootView.findViewById<TextInputEditText>(R.id.date_start)
+        dateStartTextInput.addTextChangedListener(DateHourMask())
+        val dateDueTextInput = rootView.findViewById<TextInputEditText>(R.id.date_due)
+        dateDueTextInput.addTextChangedListener(DateHourMask())
+    }
+
+    private fun configColorButton() {
+        val colorButton = rootView.findViewById<MaterialButton>(R.id.color_button)
         colorButton.setOnClickListener {
             ColorSheet().colorPicker(
-                colors = intArrayOf(Color.parseColor("red"), Color.parseColor("blue"), Color.parseColor("yellow")),
+                colors = intArrayOf(
+                    Color.parseColor("yellow"),
+                    Color.parseColor("blue"),
+                    Color.parseColor("green"),
+                    Color.parseColor("purple"),
+                    Color.parseColor("red"),
+                    //Color.parseColor("orange"),
+                    Color.parseColor("gray")
+                   // Color.parseColor("brown"),
+                   // Color.parseColor("pink"),
+                   // Color.parseColor("teal"),
+                   // Color.parseColor("cyan"),
+                   // Color.parseColor("lime"),
+                   // Color.parseColor("amber")
+                ),
                 listener = { color ->
                     when (color) {
-                        Color.parseColor("red") -> changeColor(it, "red", task!! )
-                        Color.parseColor("blue") -> changeColor(it, "blue", task!!)
-                        Color.parseColor("yellow") -> changeColor(it, "yellow", task!!)
+                        Color.parseColor("red") -> changeColor(it, "red")
+                        Color.parseColor("blue") -> changeColor(it, "blue")
+                        Color.parseColor("yellow") -> changeColor(it, "yellow")
+                        Color.parseColor("purple") -> changeColor(it, "purple")
+                        Color.parseColor("green") -> changeColor(it, "green")
+                        Color.parseColor("gray") -> changeColor(it, "gray")
                     }
                 }
             ).show(fragmentManager!!)
         }
+    }
 
-        task.let {
-            view.findViewById<TextInputEditText>(R.id.task_title).setText(it!!.title)
-            view.findViewById<TextInputEditText>(R.id.task_description).setText(it!!.description)
-            view.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(it!!.color_id))
+    private fun populateCategories() {
+        val categoriesDropdown = rootView.findViewById<MaterialBetterSpinner>(R.id.spinner_category)
+        if(categoryList.isEmpty()) {
+            categoriesDropdown.visibility = View.GONE
+            return
+        }
+        val arrayAdapterCategory = ItemDropdownAdapter(activity!!,
+            R.layout.support_simple_spinner_dropdown_item, categoryList as MutableList<ItemDropdown>)
+        categoriesDropdown.setAdapter(arrayAdapterCategory)
+        categoriesDropdown.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
+            categoriesDropdown.setText(selectedItem?.name)
+            task?.category_id = selectedItem?.id?.toInt()
+        }
+    }
+
+    private fun populateAssigneeUsers() {
+        val assigneeSpinnerDropdown  = rootView.findViewById<MaterialBetterSpinner>(R.id.spinner_assignee)
+        if(assigUserList.isEmpty()) {
+            assigneeSpinnerDropdown.visibility = View.GONE
+            return
+        }
+        val arrayAdapterAssignee = ItemDropdownAdapter(activity!!,
+            R.layout.support_simple_spinner_dropdown_item, assigUserList as MutableList<ItemDropdown>)
+        assigneeSpinnerDropdown.setAdapter(arrayAdapterAssignee)
+        assigneeSpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
+            assigneeSpinnerDropdown.setText(selectedItem?.name)
+            task?.owner_id = selectedItem?.id?.toInt()
+        }
+    }
+
+    private fun populatePriorities() {
+        val priorities = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+        val arrayAdapterPriority = ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, priorities)
+        val prioritySpinnerDropdown  = rootView.findViewById<MaterialBetterSpinner>(R.id.spinner_priority)
+        prioritySpinnerDropdown.setAdapter(arrayAdapterPriority)
+        prioritySpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = parent.adapter.getItem(position) as String
+            task?.priority = selectedItem.toInt()
         }
     }
 
@@ -101,9 +180,56 @@ class EditTaskDialogFragment() : DialogFragment() {
         }.execute()
     }
 
-    private fun changeColor(view: View, colorName: String, task: Task) {
+    private fun loadCategories() {
+        object: AsyncTask<Void, Void, Unit>(){
+            override fun doInBackground(vararg params: Void?) {
+                val parameters = "{\"project_id\": ${task.project_id}}"
+                val kbResponse = KBClient.execute(GET_ALL_CATEGORIES, parameters)
+                if(kbResponse.successful) {
+                    this@EditTaskDialogFragment.categoryList = mutableListOf<Category>()
+                    val jsonList = JSONArray(kbResponse.result)
+                    for(i in 1..jsonList.length()){
+                        val jsonObject = jsonList[i-1] as JSONObject
+                        val category = jsonObject.toCategory()
+                        this@EditTaskDialogFragment.categoryList.add(category)
+                    }
+                }
+            }
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+                populateCategories()
+            }
+        }.execute()
+    }
+
+    private fun loadAssignableUsers() {
+        object: AsyncTask<Void, Void, Unit>(){
+            override fun doInBackground(vararg params: Void?) {
+                val parameters = "[\"${task.project_id}\"]"
+                val kbResponse = KBClient.execute(GET_ASSIGNABLE_USERS, parameters)
+                if(kbResponse.successful) {
+                    val jsonObject = JSONObject(kbResponse.result)
+                    var keysList = jsonObject.keys()
+                    this@EditTaskDialogFragment.assigUserList = mutableListOf<AssignableUser>()
+                    keysList.forEach {
+                        val id = it
+                        val name = jsonObject.getString(id)
+                        this@EditTaskDialogFragment.assigUserList.add(AssignableUser(id, name))
+                    }
+                }
+            }
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+                populateAssigneeUsers()
+            }
+        }.execute()
+    }
+
+    private fun changeColor(view: View, colorName: String) {
         view.setBackgroundColor(Color.parseColor(colorName))
-        task.color_id = colorName
+        task?.color_id = colorName
     }
 
     override fun onResume() {

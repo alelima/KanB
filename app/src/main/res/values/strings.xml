@@ -15,4 +15,6 @@
     <string name="pick_a_color">Escolha uma cor</string>
     <string name="task_new">Nova Tarefa</string>
     <string name="task_button_save">Salvar</string>
+    <string name="task_date_start">Data inicial</string>
+    <string name="task_date_due">Data fim estimada</string>
 </resources>

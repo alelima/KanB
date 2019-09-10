@@ -13,5 +13,6 @@ data class Column(
     val column_score: Int?,
     val hide_in_dashboard: String?,
     val score: Int?,
+    var project_name: String? = null,
     val tasks: MutableList<Task> = mutableListOf()
 )
