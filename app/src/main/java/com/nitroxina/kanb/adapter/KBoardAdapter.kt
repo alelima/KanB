@@ -13,12 +13,13 @@ import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
 import com.nitroxina.kanb.R
 import com.nitroxina.kanb.kanboardApi.KBRole
+import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import java.util.ArrayList
 
 @Suppress("UNCHECKED_CAST")
-class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val role: KBRole?, private val projectName: String) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
+class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val role: KBRole?, private val project: Project) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
 
     override fun createItemView(context: Context, header_object: Any, item_object: Any,
         column_position: Int, item_position: Int): View {
@@ -77,7 +78,7 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val ro
         if (context is BoardActivity) {
             var task = Task("", column.project_id!!)
             task.column_id = column.id
-            task.project_name = projectName
+            task.project_name = project.name
             val taskViewModel = ViewModelProviders.of(context).get(EditTaskViewModel::class.java)
             taskViewModel.dataTask.value = task
             EditTaskDialogFragment().show(context.supportFragmentManager, "edit_dialog")

@@ -46,7 +46,7 @@ class BoardActivity : AppCompatActivity() {
                 }
                 data.add(KBoardAdapter.KBColumn(it, list as ArrayList<Any>))
         }
-        val boardAdapter = KBoardAdapter(this, data, project.role, project.name)
+        val boardAdapter = KBoardAdapter(this, data, project.role, Project(project.id, project.name))
         boardView. setAdapter(boardAdapter)
         boardView.setOnDoneListener { Log.e("scroll", "done") }
     }

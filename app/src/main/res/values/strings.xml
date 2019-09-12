@@ -17,4 +17,8 @@
     <string name="task_button_save">Salvar</string>
     <string name="task_date_start">Data inicial</string>
     <string name="task_date_due">Data fim estimada</string>
+    <string name="task_estimate_hours">Estimativa original (horas)</string>
+    <string name="task_time_spent">Tempo gasto (horas)</string>
+    <string name="task_complexity">Complexidade</string>
+    <string name="task_reference">Referência</string>
 </resources>

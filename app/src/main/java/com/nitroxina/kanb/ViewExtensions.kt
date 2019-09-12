@@ -17,3 +17,12 @@ fun MaterialCardView.scaleHeight(height: Int) {
     }
     anim.start()
 }
+
+fun String.isNumber(): Boolean {
+    try {
+        val number = this.toLong()
+    } catch(nfe: NumberFormatException) {
+        return false
+    }
+    return true
+}

@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.adapter.ItemDropdown
 import com.nitroxina.kanb.adapter.ItemDropdownAdapter
+import com.nitroxina.kanb.kanboardApi.CREATE_TASK
 import com.nitroxina.kanb.kanboardApi.GET_ALL_CATEGORIES
 import com.nitroxina.kanb.kanboardApi.GET_ASSIGNABLE_USERS
 import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
@@ -27,12 +28,8 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
 import dev.sasikanth.colorsheet.ColorSheet
 import org.json.JSONArray
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDate
-import java.util.*
 
-class EditTaskDialogFragment() : DialogFragment() {
+class EditTaskDialogFragment : DialogFragment() {
 
     private lateinit var task: Task
     private lateinit var categoryList: MutableList<Category>
@@ -44,27 +41,29 @@ class EditTaskDialogFragment() : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.task_new_edit_form_layout, null)
         task = ViewModelProviders.of(activity!!).get(EditTaskViewModel::class.java).dataTask.value!!
-        populateView()
-        return rootView
-    }
-
-    private fun populateView() {
         loadAssignableUsers()
         loadCategories()
         populatePriorities()
         configColorButton()
         configDatePick()
+        populateView()
+        return rootView
+    }
+
+    private fun populateView() {
 
         val dialogTitle = if (task?.title?.isNullOrEmpty()) { getString(R.string.task_new) } else { task?.title }
         rootView.findViewById<MaterialTextView>(R.id.text_view_title).text = "${task?.project_name} > $dialogTitle"
 
         val saveButton = rootView.findViewById<MaterialButton>(R.id.save_button)
         saveButton.setOnClickListener {
+            populateTask()
             if(task?.id == null) {
-
+                createTask()
             } else {
-                updateTask(task)
+                updateTask()
             }
+            dismiss()
         }
 
         if(task?.id != null) {
@@ -73,7 +72,10 @@ class EditTaskDialogFragment() : DialogFragment() {
             rootView.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(task!!.color_id))
             rootView.findViewById<TextInputEditText>(R.id.date_start).setText(task!!.date_started)
             rootView.findViewById<TextInputEditText>(R.id.date_due).setText(task!!.date_due)
-
+            rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).setText(task!!.time_estimated)
+            rootView.findViewById<TextInputEditText>(R.id.task_time_spent).setText(task!!.time_spent)
+            rootView.findViewById<TextInputEditText>(R.id.task_complexity).setText(task!!.score.toString())
+            rootView.findViewById<TextInputEditText>(R.id.task_reference).setText(task!!.reference)
         }
     }
 
@@ -131,6 +133,7 @@ class EditTaskDialogFragment() : DialogFragment() {
             categoriesDropdown.setText(selectedItem?.name)
             task?.category_id = selectedItem?.id?.toInt()
         }
+        categoriesDropdown.setText(task?.category_name)
     }
 
     private fun populateAssigneeUsers() {
@@ -147,6 +150,7 @@ class EditTaskDialogFragment() : DialogFragment() {
             assigneeSpinnerDropdown.setText(selectedItem?.name)
             task?.owner_id = selectedItem?.id?.toInt()
         }
+        assigneeSpinnerDropdown.setText(task?.owner_name)
     }
 
     private fun populatePriorities() {
@@ -158,12 +162,29 @@ class EditTaskDialogFragment() : DialogFragment() {
             val selectedItem = parent.adapter.getItem(position) as String
             task?.priority = selectedItem.toInt()
         }
+        prioritySpinnerDropdown.setText(task?.priority?.toString())
     }
 
-    private fun updateTask(task: Task?) {
+    private fun createTask() {
         object: AsyncTask<Void, Void, Unit>(){
             override fun doInBackground(vararg params: Void?) {
-                val parameters = task?.toJsonParameters()
+                val parameters = this@EditTaskDialogFragment.task?.toJsonCreateParameters()
+                val kbResponse = KBClient.execute(CREATE_TASK, parameters)
+                if(kbResponse.successful) {
+                    this@EditTaskDialogFragment.task?.id = kbResponse.result
+                }
+            }
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+            }
+        }.execute()
+    }
+
+    private fun updateTask() {
+        object: AsyncTask<Void, Void, Unit>(){
+            override fun doInBackground(vararg params: Void?) {
+                val parameters = this@EditTaskDialogFragment.task?.toJsonUpdateParameters()
                 val kbResponse = KBClient.execute(UPDATE_TASK, parameters)
                 if(kbResponse.successful) {
                     if(kbResponse.result?.toBoolean() == false) {
@@ -171,11 +192,6 @@ class EditTaskDialogFragment() : DialogFragment() {
                         println("Deu problema")
                     }
                 }
-            }
-
-            override fun onPostExecute(result: Unit?) {
-                super.onPostExecute(result)
-
             }
         }.execute()
     }
@@ -192,6 +208,9 @@ class EditTaskDialogFragment() : DialogFragment() {
                         val jsonObject = jsonList[i-1] as JSONObject
                         val category = jsonObject.toCategory()
                         this@EditTaskDialogFragment.categoryList.add(category)
+                        if(category.id == this@EditTaskDialogFragment.task?.category_id?.toString()) {
+                            task?.category_name = category.name
+                        }
                     }
                 }
             }
@@ -216,6 +235,9 @@ class EditTaskDialogFragment() : DialogFragment() {
                         val id = it
                         val name = jsonObject.getString(id)
                         this@EditTaskDialogFragment.assigUserList.add(AssignableUser(id, name))
+                        if(id == this@EditTaskDialogFragment.task?.owner_id?.toString()) {
+                            task?.owner_name = name
+                        }
                     }
                 }
             }
@@ -239,6 +261,18 @@ class EditTaskDialogFragment() : DialogFragment() {
         }
         dialog!!.window.attributes = params
         super.onResume()
+    }
+
+    private fun populateTask() {
+        task!!.title = rootView.findViewById<TextInputEditText>(R.id.task_title).text.toString()
+        task!!.description = rootView.findViewById<TextInputEditText>(R.id.task_description).text.toString()
+        task!!.date_started = rootView.findViewById<TextInputEditText>(R.id.date_start).text.toString()
+        task!!.date_due = rootView.findViewById<TextInputEditText>(R.id.date_due).text.toString()
+        task!!.time_estimated = rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).text.toString()
+        task!!.time_spent = rootView.findViewById<TextInputEditText>(R.id.task_time_spent).text.toString()
+        val score = rootView.findViewById<TextInputEditText>(R.id.task_complexity).text.toString()
+        task!!.score = if (score.isNumber()) { score.toInt() } else { null }
+        task!!.reference = rootView.findViewById<TextInputEditText>(R.id.task_reference).text.toString()
     }
 
 }
