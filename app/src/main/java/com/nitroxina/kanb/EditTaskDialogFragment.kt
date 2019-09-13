@@ -177,6 +177,10 @@ class EditTaskDialogFragment : DialogFragment() {
 
             override fun onPostExecute(result: Unit?) {
                 super.onPostExecute(result)
+                val activity = this@EditTaskDialogFragment.activity
+                if( activity is BoardActivity) {
+                    activity.loadBoard()
+                }
             }
         }.execute()
     }

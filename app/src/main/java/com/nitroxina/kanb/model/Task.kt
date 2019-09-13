@@ -27,7 +27,7 @@ class Task(
     val external_uri: String? = null,
     val is_active: String? = null,
     var owner_id: Int? = null,
-    val position: String? = null,
+    var position: String? = null,
     var priority: Int? = null,
     val recurrence_basedate: String? = null,
     val recurrence_child: String? = null,
@@ -38,7 +38,7 @@ class Task(
     val recurrence_trigger: String? = null,
     var reference: String? = null,
     var score: Int? = null,
-    val swimlane_id: String? = null,
+    var swimlane_id: String? = null,
     var time_estimated: String? = null,
     val color: Color? = null
 ) {
@@ -69,19 +69,28 @@ class Task(
         date_due = _date_due
     }
 
-    fun toJsonUpdateParameters(): String? {
+    fun toJsonUpdateParameters(): String {
         var json = "{\"id\": ${this.id}, \"title\": \"${this.title}\""
         json = addJsonParameters(json) + "}"
         return json
     }
 
-    fun toJsonCreateParameters(): String? {
+    fun toJsonCreateParameters(): String {
         var json = "{\"title\": \"${this.title}\", \"project_id\":${this.project_id}"
 
         if (!column_id.isNullOrEmpty()) {
             json += ", \"column_id\": ${this.column_id}"
         }
         json = addJsonParameters(json) + "}"
+        return json
+    }
+
+    fun toJsonMovePositionParameters(): String {
+        var json = "{\"project_id\":${this.project_id},"
+        json += "\"task_id\": ${this.id},"
+        json += "\"column_id\": ${this.column_id},"
+        json += "\"position\": ${this.position},"
+        json += "\"swimlane_id\": ${this.swimlane_id} }"
         return json
     }
 
@@ -121,6 +130,14 @@ class Task(
 
         if (!date_started.isNullOrEmpty()) {
             json1 += ", \"date_started\": \"$date_started\" "
+        }
+
+        if (!time_spent.isNullOrEmpty()) {
+            json1 += ", \"time_spent\": \"$time_spent\" "
+        }
+
+        if (!time_estimated.isNullOrEmpty()) {
+            json1 += ", \"time_estimated\": \"$time_estimated\" "
         }
 
         //TODO: tags will be in future version

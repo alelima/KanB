@@ -19,7 +19,7 @@ object KBClient {
                     return null // Give up, we've already attempted to authenticate.
                 }
 
-                val apiToken = "bcf303534f3653a106ccf8583b63b863c0885fea1b8a0a1e96e5ff71a343"
+                val apiToken = "86851b27158465c65a80b655ad31e7953c7ea5a2382dd423355c5a6da6c4"
                 val user = "jsonrpc"
                 val userApiToken = arrayOf(user, apiToken).joinToString(":")
                 val xApiAuthTokenBytes = userApiToken.toByteArray(charset("utf-8"))

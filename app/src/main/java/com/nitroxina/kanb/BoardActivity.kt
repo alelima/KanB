@@ -16,9 +16,14 @@ import com.nitroxina.kanb.model.Board
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.online.KBClient
-import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import org.json.JSONArray
 import java.util.ArrayList
+import android.view.MotionEvent
+import android.widget.TextView
+import com.nitroxina.kanb.kanboardApi.MOVE_TASK_POSITION
+import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
+import com.nitroxina.kanb.online.KBResponse
+
 
 class BoardActivity : AppCompatActivity() {
     private var list = ArrayList<Item>()
@@ -49,6 +54,54 @@ class BoardActivity : AppCompatActivity() {
         val boardAdapter = KBoardAdapter(this, data, project.role, Project(project.id, project.name))
         boardView. setAdapter(boardAdapter)
         boardView.setOnDoneListener { Log.e("scroll", "done") }
+        boardView.setOnDragItemListener(object : BoardView.DragItemStartCallback {
+            override fun startDrag(view: View, startItemPos: Int, startColumnPos: Int) {
+                //
+            }
+
+            override fun changedPosition(view: View, startItemPos: Int, startColumnPos: Int,
+                newItemPos: Int, newColumnPos: Int) {
+                //
+            }
+
+            override fun dragging(itemView: View, event: MotionEvent) {
+                //
+            }
+
+            override fun endDrag(view: View, startItemPos: Int, startColumnPos: Int,
+                endItemPos: Int, endColumnPos: Int) {
+                if(startItemPos != endItemPos || startColumnPos != endColumnPos) {
+                    val id = view.findViewById<TextView>(R.id.task_id).text.toString()
+                    val task = Task("", project.id, id)
+                    task.position = (endItemPos + 1).toString()
+                    task.column_id = (endColumnPos + 1).toString()
+                    task.swimlane_id = board.swimlanes[0].id
+                    updateTaskPosition(task)
+                }
+
+                Log.d("BOARD", "Posicao inicial $startItemPos, Final: $endItemPos")
+                Log.d("BOARD", "Coluna inicial $startColumnPos, Final: $endColumnPos")
+            }
+        })
+
+        //        boardView.setOnDragColumnListener(object : BoardView.DragColumnStartCallback {
+//            override fun startDrag(view: View, startColumnPos: Int) {
+//                //
+//            }
+//
+//            override fun changedPosition(view: View, startColumnPos: Int, newColumnPos: Int) {
+//                //
+//            }
+//
+//            override fun dragging(itemView: View, event: MotionEvent) {
+//                //
+//            }
+//
+//            override fun endDrag(view: View, startColumnPos: Int, endColumnPos: Int) {
+//                Log.d("BOARD", "Posicao inicial")
+//                //
+//            }
+//        })
     }
 
     fun loadBoard() {
@@ -66,4 +119,25 @@ class BoardActivity : AppCompatActivity() {
             }
         }.execute()
     }
+
+    fun updateTaskPosition(task: Task) {
+        object: AsyncTask<Void, Void, KBResponse?>(){
+            override fun doInBackground(vararg params: Void?) : KBResponse? {
+                val parameters = task.toJsonMovePositionParameters()
+                return KBClient.execute(MOVE_TASK_POSITION, parameters)
+            }
+
+            override fun onPostExecute(result: KBResponse?) {
+                super.onPostExecute(result)
+                if(!result?.successful!!) {
+                    //volta o quadro para o estado anterior (como?)
+                }
+            }
+        }.execute()
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//        loadBoard()
+//    }
 }

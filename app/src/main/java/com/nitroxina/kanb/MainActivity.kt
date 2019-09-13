@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -74,10 +75,17 @@ class MainActivity : AppCompatActivity() {
     fun loadProfile() {
         if(this.profile == null) {
             object : AsyncTask<Void, Void, Profile>() {
-                override fun doInBackground(vararg params: Void?): Profile {
+                override fun doInBackground(vararg params: Void?): Profile? {
                     val kbResponse = KBClient.execute(GET_ME)
                     if(!kbResponse.successful) {
-                        //TODO tratar erro aqui
+                        AlertDialog.Builder(this@MainActivity)
+                            .setMessage(kbResponse.error?.message)
+                            .setNeutralButton("Ok") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+                        return null
                     }
                     val jsonObj = JSONObject(kbResponse.result)
                     return jsonObj.toProfile()
