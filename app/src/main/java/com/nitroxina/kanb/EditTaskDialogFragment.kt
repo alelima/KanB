@@ -63,6 +63,7 @@ class EditTaskDialogFragment : DialogFragment() {
             } else {
                 updateTask()
             }
+            activity!!.recreate()
             dismiss()
         }
 

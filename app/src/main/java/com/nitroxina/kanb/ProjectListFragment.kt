@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nitroxina.kanb.adapter.ProjectAdapter
 import com.nitroxina.kanb.model.Profile
 
@@ -21,6 +22,7 @@ class ProjectListFragment : Fragment() {
         profile = arguments?.get("profile") as Profile
         val projectAdapter = configureList(rootView)
         configureRefresh(rootView, projectAdapter)
+        configureFAB(rootView)
         return rootView
     }
 
@@ -30,7 +32,6 @@ class ProjectListFragment : Fragment() {
             projectAdapter.loadList {
                 refreshLayout.isRefreshing = false
             }
-            true
         }
     }
 
@@ -42,5 +43,12 @@ class ProjectListFragment : Fragment() {
         listView.adapter = viewAdapter
 
         return viewAdapter
+    }
+
+    private fun configureFAB(rootView: View) {
+        val fab = rootView.findViewById<FloatingActionButton>(R.id.fab_project)
+        fab.setOnClickListener {
+            ProjectNewDialogFragment(profile.id).show(activity!!.supportFragmentManager, "create_dialog")
+        }
     }
 }

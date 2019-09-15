@@ -14,11 +14,16 @@
     <string name="task_button_color">Cor</string>
     <string name="pick_a_color">Escolha uma cor</string>
     <string name="task_new">Nova Tarefa</string>
-    <string name="task_button_save">Salvar</string>
+    <string name="button_save">Salvar</string>
     <string name="task_date_start">Data inicial</string>
     <string name="task_date_due">Data fim estimada</string>
     <string name="task_estimate_hours">Estimativa original (horas)</string>
     <string name="task_time_spent">Tempo gasto (horas)</string>
     <string name="task_complexity">Complexidade</string>
     <string name="task_reference">Referência</string>
+    <string name="projec_view_title">Novo Projeto</string>
+    <string name="project_name">Nome</string>
+    <string name="project_identify">Identificador</string>
+    <string name="project_description">Descrição</string>
+    <string name="splash_text">KanB</string>
 </resources>

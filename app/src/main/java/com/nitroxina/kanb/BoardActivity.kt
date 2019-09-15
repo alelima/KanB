@@ -72,7 +72,7 @@ class BoardActivity : AppCompatActivity() {
                 endItemPos: Int, endColumnPos: Int) {
                 if(startItemPos != endItemPos || startColumnPos != endColumnPos) {
                     val id = view.findViewById<TextView>(R.id.task_id).text.toString()
-                    val task = Task("", project.id, id)
+                    val task = Task("", project.id!!, id)
                     task.position = (endItemPos + 1).toString()
                     task.column_id = (endColumnPos + 1).toString()
                     task.swimlane_id = board.swimlanes[0].id
@@ -83,25 +83,6 @@ class BoardActivity : AppCompatActivity() {
                 Log.d("BOARD", "Coluna inicial $startColumnPos, Final: $endColumnPos")
             }
         })
-
-        //        boardView.setOnDragColumnListener(object : BoardView.DragColumnStartCallback {
-//            override fun startDrag(view: View, startColumnPos: Int) {
-//                //
-//            }
-//
-//            override fun changedPosition(view: View, startColumnPos: Int, newColumnPos: Int) {
-//                //
-//            }
-//
-//            override fun dragging(itemView: View, event: MotionEvent) {
-//                //
-//            }
-//
-//            override fun endDrag(view: View, startColumnPos: Int, endColumnPos: Int) {
-//                Log.d("BOARD", "Posicao inicial")
-//                //
-//            }
-//        })
     }
 
     fun loadBoard() {

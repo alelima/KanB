@@ -77,7 +77,6 @@ class Task(
 
     fun toJsonCreateParameters(): String {
         var json = "{\"title\": \"${this.title}\", \"project_id\":${this.project_id}"
-
         if (!column_id.isNullOrEmpty()) {
             json += ", \"column_id\": ${this.column_id}"
         }

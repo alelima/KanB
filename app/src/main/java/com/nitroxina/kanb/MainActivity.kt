@@ -1,21 +1,15 @@
 package com.nitroxina.kanb
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.nitroxina.kanb.kanboardApi.*
 import com.nitroxina.kanb.model.Profile
-import com.nitroxina.kanb.online.KBClient
-import dev.sasikanth.colorsheet.ColorSheet
 import okhttp3.*
 import okhttp3.Route
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,9 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadProfile()// tem que passar isso pra o splash
+        profile =  intent.getSerializableExtra("profile") as Profile
         setContentView(R.layout.activity_main)
-        navigateTo(TASK_LIST_FRAGMENT)
+        navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
         configureBottomMenu()
     }
 
@@ -70,32 +64,6 @@ class MainActivity : AppCompatActivity() {
         val bundle = Bundle()
         bundle.putSerializable("profile", profile)
         return bundle
-    }
-
-    fun loadProfile() {
-        if(this.profile == null) {
-            object : AsyncTask<Void, Void, Profile>() {
-                override fun doInBackground(vararg params: Void?): Profile? {
-                    val kbResponse = KBClient.execute(GET_ME)
-                    if(!kbResponse.successful) {
-                        AlertDialog.Builder(this@MainActivity)
-                            .setMessage(kbResponse.error?.message)
-                            .setNeutralButton("Ok") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .create()
-                            .show()
-                        return null
-                    }
-                    val jsonObj = JSONObject(kbResponse.result)
-                    return jsonObj.toProfile()
-                }
-
-                override fun onPostExecute(profile: Profile) {
-                    this@MainActivity.profile = profile
-                }
-            }.execute()
-        }
     }
 
     fun loadList(callback: ()->Unit) {
