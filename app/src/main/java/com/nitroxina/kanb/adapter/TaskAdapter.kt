@@ -16,15 +16,19 @@ import com.nitroxina.kanb.toTask
 import org.json.JSONArray
 import org.json.JSONObject
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
+import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.scaleHeight
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
+import io.noties.markwon.Markwon
 
-class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-    private val expandHeight : Int = 520
+class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private val expandHeight : Int = 1020
 
     init {
         loadList()
@@ -66,6 +70,12 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "# ${task.id}"
                 findViewById<View>(com.nitroxina.kanb.R.id.line_color).setBackgroundColor(Color.parseColor(task.color_id))
 
+//                val descriptionTxtView = findViewById<TextView>(com.nitroxina.kanb.R.id.descriptionView)
+//                if(!descriptionTxtView.text.isNullOrBlank() && !task.description.isNullOrEmpty()) {
+//                    Markwon.create(descriptionTxtView.context).setMarkdown(descriptionTxtView, task.description!!)
+//                }
+//                descriptionTxtView.visibility = View.GONE
+
                 var minHeight = 0
                 val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
                 @TargetApi(21)
@@ -84,7 +94,9 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
                     it as MaterialCardView
                     if (it.height == minHeight) { //if is collapsed
                         it.scaleHeight(expandHeight)
+                        //descriptionTxtView.visibility = View.VISIBLE
                     } else {
+                        //descriptionTxtView.visibility = View.GONE
                         it.scaleHeight(minHeight)
                     }
                 }
@@ -93,6 +105,12 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
                 buttonEdit.setOnClickListener {
                     openTaskForEdition(holder.taskItemView, task)
                 }
+                val ownerIcon = findViewById<ImageView>(com.nitroxina.kanb.R.id.icon_owner)
+                ownerIcon.setImageResource(com.nitroxina.kanb.R.drawable.circle_bg)
+                val textOwnerIcon = findViewById<TextView>(com.nitroxina.kanb.R.id.icon_text)
+                textOwnerIcon.text = profile.username!!.substring(0..1).toUpperCase()
+                textOwnerIcon.bringToFront()
+                findViewById<MaterialTextView>(com.nitroxina.kanb.R.id.owner_name).text = profile.username
             }
         }
     }

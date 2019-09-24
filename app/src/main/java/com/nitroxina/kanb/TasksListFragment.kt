@@ -11,12 +11,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nitroxina.kanb.adapter.TaskAdapter
+import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 
 class TasksListFragment : Fragment() {
+
+    private lateinit var profile: Profile
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.task_list_layout, null)
+        profile = arguments?.get("profile") as Profile
         val taskAdapter = configureList(rootView)
         configureRefresh(rootView, taskAdapter)
         configureListObserver()
@@ -35,7 +40,7 @@ class TasksListFragment : Fragment() {
 
     private fun configureList(rootView: View): TaskAdapter {
         val viewManager = LinearLayoutManager(activity!!)
-        val viewAdapter = TaskAdapter()
+        val viewAdapter = TaskAdapter(profile)
         val listView = rootView.findViewById<RecyclerView>(R.id.task_list)
         listView.layoutManager = viewManager
         listView.adapter = viewAdapter

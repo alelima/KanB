@@ -170,6 +170,6 @@
             android:layout_height="60dp"
             android:layout_margin="10dp"
             android:backgroundTint="@color/colorDeepBlue"
-            android:text="@string/task_button_save" />
+            android:text="@string/button_save" />
 </LinearLayout>
 </androidx.core.widget.NestedScrollView>

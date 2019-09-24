@@ -26,4 +26,11 @@
     <string name="project_identify">Identificador</string>
     <string name="project_description">Descrição</string>
     <string name="splash_text">KanB</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_user">Username</string>
+    <string name="prompt_token">Kanboard Token</string>
+    <string name="action_sign_in">Sign in and Save</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="kanboard_server">"Url do seu serviço Kanban (Kanboard)"</string>
+    <string name="icon_owner">Owner</string>
 </resources>

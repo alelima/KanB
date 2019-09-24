@@ -9,17 +9,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nitroxina.kanb.kanboardApi.GET_ME
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.online.KBClient
+import com.nitroxina.kanb.persistence.SharedPreferenceKB
 import org.json.JSONObject
 
 class SplashActivity : AppCompatActivity() {
     private var delayHandler: Handler? = null
-    private val SPLASH_DELAY: Long = 15000
+    private val SPLASH_DELAY: Long = 2000
     private lateinit var profile: Profile
 
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("profile", profile)
+            var intent: Intent? = null
+            if(this::profile.isInitialized) {
+                intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("profile", profile)
+            } else {
+                intent = Intent(this, LoginActivity::class.java)
+            }
             startActivity(intent)
             finish()
         }
@@ -42,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun loadProfile() {
-        if(!isProfileStored()) {
+        if(isUsernameAndTokenStored()) {
             object : AsyncTask<Void, Void, Profile>() {
                 override fun doInBackground(vararg params: Void?): Profile? {
                     val kbResponse = KBClient.execute(GET_ME)
@@ -68,8 +74,12 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun isProfileStored(): Boolean {
-        return false
+    private fun isUsernameAndTokenStored(): Boolean {
+        val sharedPreference = SharedPreferenceKB(this)
+        val server_url =  sharedPreference.getValueString(SharedPreferenceKB.SERVER_URL)
+        val kbToken =  sharedPreference.getDecriptValueString(SharedPreferenceKB.TOKEN)
+        val username =  sharedPreference.getValueString(SharedPreferenceKB.USERNAME)
+        return !(server_url.isNullOrBlank() || kbToken.isNullOrBlank() || username.isNullOrBlank())
     }
 
 

@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorGray">#D3D3D3</color>
     <color name="colorDeepBlue">#00BFFF</color>
+    <color name="circle_default">#9ccc65</color>
 </resources>

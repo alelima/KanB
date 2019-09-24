@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationMenu.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.menuitem_projects -> navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
-                R.id.menuitem_tasks -> navigateTo(TASK_LIST_FRAGMENT)
+                R.id.menuitem_tasks -> navigateTo(TASK_LIST_FRAGMENT, getProfileBundle())
                 R.id.menuitem_perfil -> navigateTo(PROFILE_FRAGMENT, getProfileBundle())
             }
             true

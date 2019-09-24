@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.R
@@ -24,6 +25,7 @@ import org.json.JSONObject
 class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder>() {
 
     lateinit var listener: AdapterView.OnItemClickListener
+    lateinit var progressBar: ProgressBar
 
     init {
         loadList()
@@ -37,6 +39,14 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
 
     fun loadList(callback: ()->Unit) {
         object: AsyncTask<Void, Void, Unit>(){
+
+            override fun onPreExecute() {
+                super.onPreExecute()
+                if(this@ProjectAdapter::progressBar.isInitialized) {
+                    progressBar.visibility = View.VISIBLE
+                }
+            }
+
             override fun doInBackground(vararg params: Void?) {
                 val kbResponse = KBClient.execute(GET_MY_PROJECTS_LIST)
                 val jsonObject = JSONObject(kbResponse.result)
@@ -46,7 +56,6 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
                     val id = it
                     val userId = this@ProjectAdapter.profile.id
                     val role = loadRole(id, userId)
-                    //pegar a role do projeto aqui id projeto + id user
                     val name = jsonObject.getString(id)
                     val project = Project(id, name)
                     project.role = role
@@ -55,6 +64,9 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
             }
             override fun onPostExecute(result: Unit?) {
                 this@ProjectAdapter.notifyDataSetChanged()
+                if(this@ProjectAdapter::progressBar.isInitialized) {
+                    progressBar.visibility = View.GONE
+                }
                 callback()
             }
         }.execute()
