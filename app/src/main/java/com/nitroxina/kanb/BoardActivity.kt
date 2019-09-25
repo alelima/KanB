@@ -28,14 +28,13 @@ import com.nitroxina.kanb.online.KBResponse
 class BoardActivity : AppCompatActivity() {
     private var list = ArrayList<Item>()
     private lateinit var project : Project
-    private lateinit var board: Board
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
         project = intent.getSerializableExtra("project") as Project
-        supportActionBar?.title = project.name
-        loadBoard()
+        //supportActionBar?.title = project.name
+        createBoard()
     }
 
     fun createBoard() {
@@ -44,7 +43,7 @@ class BoardActivity : AppCompatActivity() {
         val data = ArrayList<KBoardAdapter.KBColumn>()
 
         //depois ver como fazer um board por swimlane
-        board.swimlanes[0].columns.forEach {
+        project.board!!.swimlanes[0].columns.forEach {
                 val list = mutableListOf<Task>()
                 it.tasks.forEach {
                     list.add(it)
@@ -75,7 +74,7 @@ class BoardActivity : AppCompatActivity() {
                     val task = Task("", project.id!!, id)
                     task.position = (endItemPos + 1).toString()
                     task.column_id = (endColumnPos + 1).toString()
-                    task.swimlane_id = board.swimlanes[0].id
+                    task.swimlane_id = project.board!!.swimlanes[0].id
                     updateTaskPosition(task)
                 }
 
@@ -83,22 +82,6 @@ class BoardActivity : AppCompatActivity() {
                 Log.d("BOARD", "Coluna inicial $startColumnPos, Final: $endColumnPos")
             }
         })
-    }
-
-    fun loadBoard() {
-        object: AsyncTask<Void, Void, Unit>(){
-            override fun doInBackground(vararg params: Void?) {
-                val parameters = "[ ${project.id} ]"
-                val kbResponse = KBClient.execute(GET_BOARD, parameters)
-                val jsonArray = JSONArray(kbResponse.result)
-                this@BoardActivity.board = jsonArray.toBoard()
-            }
-
-            override fun onPostExecute(result: Unit?) {
-                super.onPostExecute(result)
-                createBoard()
-            }
-        }.execute()
     }
 
     fun updateTaskPosition(task: Task) {
@@ -113,6 +96,22 @@ class BoardActivity : AppCompatActivity() {
                 if(!result?.successful!!) {
                     //volta o quadro para o estado anterior (como?)
                 }
+            }
+        }.execute()
+    }
+
+    fun loadBoard() {
+        object: AsyncTask<Void, Void, Unit>(){
+            override fun doInBackground(vararg params: Void?) {
+                val parameters = "[ ${project.id} ]"
+                val kbResponse = KBClient.execute(GET_BOARD, parameters)
+                val jsonArray = JSONArray(kbResponse.result)
+                this@BoardActivity.project.board = jsonArray.toBoard()
+            }
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+                createBoard()
             }
         }.execute()
     }

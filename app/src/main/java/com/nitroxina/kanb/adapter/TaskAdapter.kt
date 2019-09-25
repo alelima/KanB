@@ -67,7 +67,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
             (holder.taskItemView as ViewGroup).apply {
                 val task = this@TaskAdapter.list[position]
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_title).text = task.title
-                findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "# ${task.id}"
+                findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "#${task.id}"
                 findViewById<View>(com.nitroxina.kanb.R.id.line_color).setBackgroundColor(Color.parseColor(task.color_id))
 
 //                val descriptionTxtView = findViewById<TextView>(com.nitroxina.kanb.R.id.descriptionView)

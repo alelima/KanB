@@ -1,15 +1,15 @@
 package com.nitroxina.kanb
 
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.nitroxina.kanb.kanboardApi.*
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.nitroxina.kanb.model.Profile
-import okhttp3.*
-import okhttp3.Route
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,8 +30,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         profile =  intent.getSerializableExtra("profile") as Profile
         setContentView(R.layout.activity_main)
-        navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
         configureBottomMenu()
+        navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
+
     }
 
     fun navigateTo(item: String, bundle: Bundle? = null) {
@@ -44,11 +45,11 @@ class MainActivity : AppCompatActivity() {
                 android.R.anim.slide_in_left,
                 android.R.anim.slide_out_right)
             .replace(R.id.fragment_container, fragmentInstance)
+            .addToBackStack(null)
             .commit()
     }
 
     private fun configureBottomMenu() {
-
         val bottomNavigationMenu = findViewById<BottomNavigationView>(R.id.bottom_main_menu)
         bottomNavigationMenu.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -66,49 +67,5 @@ class MainActivity : AppCompatActivity() {
         return bundle
     }
 
-    fun loadList(callback: ()->Unit) {
-        val JSON = MediaType.parse("application/json; charset=utf-8")
-        val jsonString = "{\"jsonrpc\": \"2.0\", \"method\": \"$GET_MY_PROJECTS\", \"id\": 2}"
-        val body = RequestBody.create(JSON, jsonString)
-
-        val authenticator = object : Authenticator {
-            override fun authenticate(route: Route, response: Response): Request? {
-                if (response.request().header("Authorization") != null) {
-                    return null // Give up, we've already attempted to authenticate.
-                }
-                println("Authenticating for response: $response")
-                val credential = Credentials.basic("admin", "admin")
-                return response.request().newBuilder()
-                    .header("Authorization", credential)
-                    .build()
-            }
-        }
-
-        object: AsyncTask<Void, Void, Unit>(){
-            override fun doInBackground(vararg params: Void?) {
-//                val okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()
-//                val request = Request.Builder()
-//                    .url("$KB_URL")
-//                    .post(body)
-//                    .build()
-//                val response = okHttpClient.newCall(request).execute()
-//                val jsonObj = JSONObject(response.body()!!.string())
-//                var kbResponse = jsonObj.getKBResponse()
-//                println(kbResponse.toString())
-
-
-//                val kbResponse = KBClient.execute(GET_MY_PROJECTS_LIST)
-//                val jsonList = JSONArray(kbResponse.result)
-//                this@ProjectAdapter.list = mutableListOf<Project>()
-//                for(i in 1..jsonList.length()){
-//                    val jsonObject = jsonList[i-1] as JSONObject
-//                    val project = jsonObject.toSimpleProject()
-//                    list.add(project)
-//                }
-            }
-
-
-        }.execute()
-    }
 }
 

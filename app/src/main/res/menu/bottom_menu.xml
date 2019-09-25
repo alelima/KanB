@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/menuitem_projects"
-            android:icon="@android:drawable/ic_menu_add"
-            android:title="@string/menu_projects" />
+            android:icon="@drawable/icon_projects"
+            android:title="@string/menu_projects"
+            app:showAsAction="ifRoom"/>
     <item
             android:id="@+id/menuitem_tasks"
-            android:title="@string/menu_tasks" />
-            <!--android:icon="@drawable/iconmenu_list"-->
+            android:icon="@drawable/icon_tasks"
+            android:title="@string/menu_tasks"
+            app:showAsAction="ifRoom"/>
 
     <item
             android:id="@+id/menuitem_perfil"
-            android:title="@string/menu_perfil" />
+            android:icon="@drawable/icon_profile"
+            android:title="@string/menu_perfil"
+            app:showAsAction="ifRoom"/>
+
             <!--android:icon="@drawable/icon_settings"-->
 
 </menu>

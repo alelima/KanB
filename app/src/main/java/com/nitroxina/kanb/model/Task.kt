@@ -2,6 +2,7 @@ package com.nitroxina.kanb.model
 
 import com.nitroxina.kanb.isNumber
 import org.json.JSONObject
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,7 +42,7 @@ class Task(
     var swimlane_id: String? = null,
     var time_estimated: String? = null,
     val color: Color? = null
-) {
+) : Serializable {
     var category_name: String? = ""
     var owner_name: String? = ""
     val subTasks: MutableList<SubTask> = mutableListOf<SubTask>()

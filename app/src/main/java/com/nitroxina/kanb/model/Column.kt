@@ -1,5 +1,7 @@
 package com.nitroxina.kanb.model
 
+import java.io.Serializable
+
 data class Column(
     val id: String,
     val title: String,
@@ -15,4 +17,4 @@ data class Column(
     val score: Int?,
     var project_name: String? = null,
     val tasks: MutableList<Task> = mutableListOf()
-)
+) : Serializable

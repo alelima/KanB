@@ -30,6 +30,8 @@ data class Project(
     var role : KBRole? = null
 ) : Serializable {
 
+    var board: Board? = null
+
     fun toJsonCreateParameters() : String {
         var json = "{ \"${this::name.name}\": \"${this.name}\""
         if (!(this.description).isNullOrEmpty()) {

@@ -1,5 +1,7 @@
 package com.nitroxina.kanb.model
 
+import java.io.Serializable
+
 class Swimlane (
     val id: String,
     val name: String,
@@ -12,4 +14,4 @@ class Swimlane (
     val project_id: String,
     val score: Int,
     val columns: MutableList<Column> = mutableListOf()
-)
+) : Serializable

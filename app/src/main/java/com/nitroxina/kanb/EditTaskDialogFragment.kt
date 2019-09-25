@@ -1,5 +1,6 @@
 package com.nitroxina.kanb
 
+import android.app.Dialog
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -39,7 +40,7 @@ class EditTaskDialogFragment : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        rootView = inflater.inflate(R.layout.task_new_edit_form_layout, null)
+        rootView = inflater.inflate(R.layout.task_form_layout, null)
         task = ViewModelProviders.of(activity!!).get(EditTaskViewModel::class.java).dataTask.value!!
         loadAssignableUsers()
         loadCategories()
@@ -49,6 +50,7 @@ class EditTaskDialogFragment : DialogFragment() {
         populateView()
         return rootView
     }
+
 
     private fun populateView() {
 

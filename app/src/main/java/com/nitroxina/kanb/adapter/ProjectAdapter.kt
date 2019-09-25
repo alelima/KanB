@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.R
 import com.nitroxina.kanb.kanboardApi.GET_BOARD
@@ -19,6 +20,7 @@ import com.nitroxina.kanb.model.Board
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.online.KBClient
+import com.nitroxina.kanb.toBoard
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -59,6 +61,7 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
                     val name = jsonObject.getString(id)
                     val project = Project(id, name)
                     project.role = role
+                    project.board = loadBoard(id)
                     list.add(project)
                 }
             }
@@ -72,13 +75,20 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
         }.execute()
     }
 
-    private fun loadRole(id: String?, userId: String) : KBRole? {
-        val parameters = "[$id, $userId]"
+    private fun loadRole(projectId: String?, userId: String) : KBRole? {
+        val parameters = "[$projectId, $userId]"
         val kbResponse = KBClient.execute(GET_PROJECT_USER_ROLE, parameters)
         if(!kbResponse.successful) {
             // TODO: Se deu erro tratar aqui
         }
         return KBRole.getKBRoleByValue(kbResponse.result!!)
+    }
+
+    private fun loadBoard(projectId: String?) : Board? {
+        val parameters = "[ $projectId ]"
+        val kbResponse = KBClient.execute(GET_BOARD, parameters)
+        val jsonArray = JSONArray(kbResponse.result)
+        return jsonArray.toBoard()
     }
 
     override fun getItemCount(): Int = this.list.size
@@ -88,8 +98,12 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
             (holder.projectItemView as ViewGroup).apply {
                 val project = this@ProjectAdapter.list[position]
                 findViewById<TextView>(R.id.project_name).text = project.name
-                findViewById<TextView>(R.id.project_id).text = project.id
-                holder.projectItemView.setOnClickListener {
+                findViewById<TextView>(R.id.project_id).text = "#${project.id}"
+                if(project.board != null) {
+                    findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
+                }
+                val projectCard = findViewById<MaterialCardView>(R.id.project_card)
+                projectCard.setOnClickListener {
                     val context = holder.projectItemView.context
                     val intent = Intent(context, BoardActivity::class.java)
                     intent.putExtra("project", project)
