@@ -7,33 +7,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.R
-import com.nitroxina.kanb.kanboardApi.GET_BOARD
-import com.nitroxina.kanb.kanboardApi.GET_MY_PROJECTS_LIST
-import com.nitroxina.kanb.kanboardApi.GET_PROJECT_USER_ROLE
-import com.nitroxina.kanb.kanboardApi.KBRole
+import com.nitroxina.kanb.kanboardApi.*
 import com.nitroxina.kanb.model.Board
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.online.KBClient
-import com.nitroxina.kanb.toBoard
+import com.nitroxina.kanb.extensions.toBoard
+import com.nitroxina.kanb.extensions.toProject
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder>() {
+class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  RecyclerView.Adapter<ProjectAdapter.ProjecViewHolder>() {
 
     lateinit var listener: AdapterView.OnItemClickListener
     lateinit var progressBar: ProgressBar
 
     init {
-        loadList()
+        //loadList()
     }
 
-    private var list: MutableList<Project> = mutableListOf()
+    //private var list: MutableList<Project> = mutableListOf()
 
     fun loadList() {
         loadList { }
@@ -50,20 +49,31 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
             }
 
             override fun doInBackground(vararg params: Void?) {
-                val kbResponse = KBClient.execute(GET_MY_PROJECTS_LIST)
-                val jsonObject = JSONObject(kbResponse.result)
-                var keysList = jsonObject.keys()
-                this@ProjectAdapter.list = mutableListOf<Project>()
-                keysList.forEach {
-                    val id = it
-                    val userId = this@ProjectAdapter.profile.id
-                    val role = loadRole(id, userId)
-                    val name = jsonObject.getString(id)
-                    val project = Project(id, name)
-                    project.role = role
-                    project.board = loadBoard(id)
+                val kbResponse = KBClient.execute(GET_MY_PROJECTS)
+                val jsonArray = JSONArray(kbResponse.result)
+                val userId = this@ProjectAdapter.profile.id
+                for(i in 1..jsonArray.length()){
+                    val project = (jsonArray[i-1] as JSONObject).toProject()
+                    val role = loadRole(project.id, userId)
+                    project.projectRole = role
+                    project.board = loadBoard(project.id)
                     list.add(project)
+
                 }
+
+
+//                var keysList = jsonObject.keys()
+//                this@ProjectAdapter.list = mutableListOf<Project>()
+//                keysList.forEach {
+//                    val id = it
+//                    val userId = this@ProjectAdapter.profile.id
+//                    val projectRole = loadRole(id, userId)
+//                    val name = jsonObject.getString(id)
+//                    val project = Project(id, name)
+//                    project.projectRole = projectRole
+//                    project.board = loadBoard(id)
+//                    list.add(project)
+//                }
             }
             override fun onPostExecute(result: Unit?) {
                 this@ProjectAdapter.notifyDataSetChanged()
@@ -75,13 +85,13 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
         }.execute()
     }
 
-    private fun loadRole(projectId: String?, userId: String) : KBRole? {
+    private fun loadRole(projectId: String?, userId: String) : KBProjectRole? {
         val parameters = "[$projectId, $userId]"
         val kbResponse = KBClient.execute(GET_PROJECT_USER_ROLE, parameters)
         if(!kbResponse.successful) {
             // TODO: Se deu erro tratar aqui
         }
-        return KBRole.getKBRoleByValue(kbResponse.result!!)
+        return KBProjectRole.getKBRoleByValue(kbResponse.result!!)
     }
 
     private fun loadBoard(projectId: String?) : Board? {
@@ -99,6 +109,11 @@ class ProjectAdapter(val profile: Profile) :  RecyclerView.Adapter<ProjectAdapte
                 val project = this@ProjectAdapter.list[position]
                 findViewById<TextView>(R.id.project_name).text = project.name
                 findViewById<TextView>(R.id.project_id).text = "#${project.id}"
+
+                if(!project.isPrivate()) {
+                    findViewById<ImageView>(R.id.lock_image).visibility = View.GONE
+                }
+
                 if(project.board != null) {
                     findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
                 }

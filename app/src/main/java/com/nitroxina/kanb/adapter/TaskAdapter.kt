@@ -12,7 +12,7 @@ import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.kanboardApi.GET_MY_DASHBOARD
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.online.KBClient
-import com.nitroxina.kanb.toTask
+import com.nitroxina.kanb.extensions.toTask
 import org.json.JSONArray
 import org.json.JSONObject
 import android.view.ViewTreeObserver
@@ -23,9 +23,8 @@ import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
 import com.nitroxina.kanb.model.Profile
-import com.nitroxina.kanb.scaleHeight
+import com.nitroxina.kanb.extensions.scaleHeight
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
-import io.noties.markwon.Markwon
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     private val expandHeight : Int = 1020

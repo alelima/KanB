@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.nitroxina.kanb.extensions.getKBResponse
+import com.nitroxina.kanb.extensions.toProfile
 import com.nitroxina.kanb.kanboardApi.GET_ME
+import com.nitroxina.kanb.kanboardApi.JSONRPC_ULR
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.persistence.SharedPreferenceKB
 import okhttp3.*
@@ -17,7 +20,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var server_url:String
     private lateinit var username:String
     private lateinit var kbToken: String
-    private lateinit var profile: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         } else {
             this.username = usernameFromView
             this.kbToken = kbTokenFromView
-            this.server_url = serverFromView
+            this.server_url = generateCompleteServerURL(serverFromView)
         }
 
         //val Credential = Credential(username, kbToken)
@@ -103,5 +105,14 @@ class LoginActivity : AppCompatActivity() {
             .url(server_url)
             .post(body)
             .build()
+    }
+
+    private fun generateCompleteServerURL(url: String) : String {
+        var serverURL = url
+        if(!(url.contains("http://", true) || url.contains("https://", true))) {
+            serverURL = "http://" + url
+        }
+        serverURL += JSONRPC_ULR
+        return serverURL
     }
 }

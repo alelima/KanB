@@ -5,14 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import com.allyants.boardview.BoardView
 import com.allyants.boardview.Item
-import com.google.android.material.button.MaterialButton
 import com.nitroxina.kanb.adapter.KBoardAdapter
 import com.nitroxina.kanb.kanboardApi.GET_BOARD
-import com.nitroxina.kanb.model.Board
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.online.KBClient
@@ -20,8 +16,8 @@ import org.json.JSONArray
 import java.util.ArrayList
 import android.view.MotionEvent
 import android.widget.TextView
+import com.nitroxina.kanb.extensions.toBoard
 import com.nitroxina.kanb.kanboardApi.MOVE_TASK_POSITION
-import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
 import com.nitroxina.kanb.online.KBResponse
 
 
@@ -50,7 +46,7 @@ class BoardActivity : AppCompatActivity() {
                 }
                 data.add(KBoardAdapter.KBColumn(it, list as ArrayList<Any>))
         }
-        val boardAdapter = KBoardAdapter(this, data, project.role, Project(project.id, project.name))
+        val boardAdapter = KBoardAdapter(this, data, project.projectRole, Project(project.id, project.name))
         boardView. setAdapter(boardAdapter)
         boardView.setOnDoneListener { Log.e("scroll", "done") }
         boardView.setOnDragItemListener(object : BoardView.DragItemStartCallback {

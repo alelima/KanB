@@ -1,4 +1,4 @@
-package com.nitroxina.kanb
+package com.nitroxina.kanb.extensions
 
 import android.animation.ValueAnimator
 import com.google.android.material.card.MaterialCardView
@@ -25,4 +25,11 @@ fun String.isNumber(): Boolean {
         return false
     }
     return true
+}
+
+fun String.numberToBoolean() : Boolean {
+    if(this == "1") {
+        return true
+    }
+    return false
 }

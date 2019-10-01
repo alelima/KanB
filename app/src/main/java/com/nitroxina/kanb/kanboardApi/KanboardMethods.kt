@@ -7,7 +7,7 @@ const val GET_MY_DASHBOARD = "getMyDashboard"
 //PROJECT
 const val GET_MY_PROJECTS = "getMyProjects" // projects with details
 const val GET_MY_PROJECTS_LIST = "getMyProjectsList" //simplified projects, only id => nome
-const val GET_PROJECT_USER_ROLE = "getProjectUserRole"  // the role of a user for a given project
+const val GET_PROJECT_USER_ROLE = "getProjectUserRole"  // the projectRole of a user for a given project
 const val GET_ASSIGNABLE_USERS = "getAssignableUsers"  // Users that can be assigned to a task for a project
 const val GET_PROJECT_BY_ID = "getProjectById"
 const val CREATE_PROJECT = "createProject"

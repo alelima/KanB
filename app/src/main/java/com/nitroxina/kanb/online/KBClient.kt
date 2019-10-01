@@ -1,7 +1,7 @@
 package com.nitroxina.kanb.online
 
 import android.util.Base64
-import com.nitroxina.kanb.getKBResponse
+import com.nitroxina.kanb.extensions.getKBResponse
 import com.nitroxina.kanb.kanboardApi.KB_URL
 import okhttp3.*
 import org.json.JSONObject

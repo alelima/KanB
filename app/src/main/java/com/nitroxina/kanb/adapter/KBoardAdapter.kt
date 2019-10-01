@@ -10,16 +10,15 @@ import com.allyants.boardview.SimpleBoardAdapter
 import com.google.android.material.button.MaterialButton
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.EditTaskDialogFragment
-import com.nitroxina.kanb.MainActivity
 import com.nitroxina.kanb.R
-import com.nitroxina.kanb.kanboardApi.KBRole
+import com.nitroxina.kanb.kanboardApi.KBProjectRole
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import java.util.ArrayList
 
 @Suppress("UNCHECKED_CAST")
-class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val role: KBRole?, private val project: Project) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
+class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val projectRole: KBProjectRole?, private val project: Project) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
 
     override fun createItemView(context: Context, header_object: Any, item_object: Any,
         column_position: Int, item_position: Int): View {
@@ -52,14 +51,14 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val ro
     }
 
     override fun isColumnLocked(column_position: Int): Boolean {
-        if(role == KBRole.MANAGER) {
+        if(projectRole == KBProjectRole.MANAGER) {
             return false
         }
         return true
     }
 
     override fun isItemLocked(column_position: Int): Boolean {
-        if(role == KBRole.VIEWER) {
+        if(projectRole == KBProjectRole.VIEWER) {
             return true
         }
         return false

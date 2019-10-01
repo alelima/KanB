@@ -1,6 +1,6 @@
 package com.nitroxina.kanb.model
 
-import com.nitroxina.kanb.kanboardApi.KBRole
+import com.nitroxina.kanb.kanboardApi.KBProjectRole
 import org.json.JSONObject
 import java.io.Serializable
 
@@ -27,7 +27,7 @@ data class Project(
     val priority_end: String? = null,
     val priority_start: String? = null,
     val start_date: String? = null,
-    var role : KBRole? = null
+    var projectRole : KBProjectRole? = null
 ) : Serializable {
 
     var board: Board? = null
@@ -45,5 +45,15 @@ data class Project(
             json += ", \"${this::owner_id.name}\": $owner_id }"
         }
         return json;
+    }
+
+    fun isPrivate() : Boolean {
+        var result = false
+
+        if(!this.is_private.isNullOrEmpty() && is_private == "1") {
+            result = true
+        }
+
+        return result
     }
 }

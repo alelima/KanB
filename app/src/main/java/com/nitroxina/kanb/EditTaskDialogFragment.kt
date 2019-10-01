@@ -1,6 +1,5 @@
 package com.nitroxina.kanb
 
-import android.app.Dialog
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -15,6 +14,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.adapter.ItemDropdown
 import com.nitroxina.kanb.adapter.ItemDropdownAdapter
+import com.nitroxina.kanb.extensions.isNumber
+import com.nitroxina.kanb.extensions.toCategory
 import com.nitroxina.kanb.kanboardApi.CREATE_TASK
 import com.nitroxina.kanb.kanboardApi.GET_ALL_CATEGORIES
 import com.nitroxina.kanb.kanboardApi.GET_ASSIGNABLE_USERS
@@ -133,10 +134,10 @@ class EditTaskDialogFragment : DialogFragment() {
         categoriesDropdown.setAdapter(arrayAdapterCategory)
         categoriesDropdown.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
-            categoriesDropdown.setText(selectedItem?.name)
+            categoriesDropdown.setText(selectedItem?.name, false)
             task?.category_id = selectedItem?.id?.toInt()
         }
-        categoriesDropdown.setText(task?.category_name)
+        categoriesDropdown.setText(task?.category_name, false)
     }
 
     private fun populateAssigneeUsers() {
@@ -150,10 +151,10 @@ class EditTaskDialogFragment : DialogFragment() {
         assigneeSpinnerDropdown.setAdapter(arrayAdapterAssignee)
         assigneeSpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
-            assigneeSpinnerDropdown.setText(selectedItem?.name)
+            assigneeSpinnerDropdown.setText(selectedItem?.name, false)
             task?.owner_id = selectedItem?.id?.toInt()
         }
-        assigneeSpinnerDropdown.setText(task?.owner_name)
+        assigneeSpinnerDropdown.setText(task?.owner_name, false)
     }
 
     private fun populatePriorities() {
@@ -163,9 +164,10 @@ class EditTaskDialogFragment : DialogFragment() {
         prioritySpinnerDropdown.setAdapter(arrayAdapterPriority)
         prioritySpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.adapter.getItem(position) as String
+            prioritySpinnerDropdown.setText(selectedItem, false)
             task?.priority = selectedItem.toInt()
         }
-        prioritySpinnerDropdown.setText(task?.priority?.toString())
+        prioritySpinnerDropdown.setText(task?.priority?.toString(), false)
     }
 
     private fun createTask() {

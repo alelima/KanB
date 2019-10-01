@@ -4,14 +4,21 @@
                                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
+
+
     <com.google.android.material.button.MaterialButton
-            android:text="+"
+            style="@style/Widget.AppTheme.Button.IconButton"
+            app:icon="@drawable/ic_add_fab"
+            app:iconGravity="textStart"
+            app:iconSize="14dp"
             android:layout_width="30dp"
-            android:layout_height="30dp" app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
             android:id="@+id/add_task_button"
             android:textSize="10sp" android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@+id/column_title"/>
+
     <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"

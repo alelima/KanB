@@ -34,4 +34,29 @@
     <string name="kanboard_server">"Url do seu serviço Kanban (Kanboard)"</string>
     <string name="icon_owner">Owner</string>
     <string name="lock_content_description">um cadeado</string>
+    <string name="profile_email">Email:</string>
+    <string name="profile_status">Status:</string>
+    <string name="profile_securiity">Segurança</string>
+    <string name="profile_role">Função:</string>
+    <string name="profile_account_type">Tipo de conta:</string>
+    <string name="profile_number_failed_login">Número de logins que falharam:</string>
+    <string name="profile_preferences">Preferências</string>
+    <string name="profile_timezone">Fuso horário:</string>
+    <string name="profile_language">Idioma:</string>
+    <string name="profile_custom_filter">Filtro personalizado:</string>
+    <string name="profile_notifications">Notificações:</string>
+    <string name="profile_two_factor_authentication_disabled">Autenticação em duas etapas desativada</string>
+    <string name="profile_two_factor_authentication_enabled">Autenticação em duas etapas ativada</string>
+    <string name="profile_accout_type_remote">Remoto</string>
+    <string name="profile_accout_type_local">Local</string>
+    <string name="profile_notifications_enabled">Habilitado</string>
+    <string name="profile_notifications_disabled">Desabilitado</string>
+    <string name="profile_aplication_dafult">Padrão da aplicação</string>
+    <string name="profile_app_role_admin">Administrador</string>
+    <string name="profile_app_role_manager">Gerente</string>
+    <string name="profile_app_role_user">Usuário</string>
+    <string name="profile_status_active">Ativo</string>
+    <string name="profile_status_inactive">Inativo</string>
+    <string name="profile_none">Não informado</string>
+
 </resources>

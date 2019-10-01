@@ -1,6 +1,6 @@
 package com.nitroxina.kanb.model
 
-import com.nitroxina.kanb.isNumber
+import com.nitroxina.kanb.extensions.isNumber
 import org.json.JSONObject
 import java.io.Serializable
 import java.text.SimpleDateFormat

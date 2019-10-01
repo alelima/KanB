@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.nitroxina.kanb.extensions.toProfile
 import com.nitroxina.kanb.kanboardApi.GET_ME
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.online.KBClient
