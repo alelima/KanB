@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.nitroxina.kanb.extensions.getKBResponse
@@ -12,9 +13,12 @@ import com.nitroxina.kanb.extensions.toProfile
 import com.nitroxina.kanb.kanboardApi.GET_ME
 import com.nitroxina.kanb.kanboardApi.JSONRPC_ULR
 import com.nitroxina.kanb.model.Profile
+import com.nitroxina.kanb.online.KBResponse
+import com.nitroxina.kanb.online.TimesExecutor
 import com.nitroxina.kanb.persistence.SharedPreferenceKB
 import okhttp3.*
 import org.json.JSONObject
+import java.lang.ref.WeakReference
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var server_url:String
@@ -66,34 +70,37 @@ class LoginActivity : AppCompatActivity() {
             }
             val okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()
             val request = createRequestForProfile()
-            val sharedPreference = SharedPreferenceKB(this)
 
-            object : AsyncTask<Void, Void, Profile?>() {
-                override fun doInBackground(vararg params: Void?): Profile? {
-                    val response = okHttpClient.newCall(request).execute()
-                    val kbResponse = JSONObject(response.body()!!.string()).getKBResponse()
-                    return if (kbResponse.successful) {
-                        val jsonObj = JSONObject(kbResponse.result)
-                        jsonObj.toProfile()
-                    } else {
-                        val kbError = kbResponse.error
-                        null
-                        //TODO mapeia os erros aqui para retornar feedback ao usuario
-                    }
-                }
+            ProfileConfigurationAsyncTask(this,okHttpClient).execute()
 
-                override fun onPostExecute(profile: Profile?) {
-                    if(profile != null) {
-                        sharedPreference.save(SharedPreferenceKB.SERVER_URL, this@LoginActivity.server_url)
-                        sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, this@LoginActivity.kbToken)
-                        sharedPreference.save(SharedPreferenceKB.USERNAME, this@LoginActivity.username)
-                        Toast.makeText(this@LoginActivity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.putExtra("profile", profile)
-                        startActivity(intent)
-                    }
-                }
-            }.execute()
+//            val sharedPreference = SharedPreferenceKB(this)
+//
+//            object : AsyncTask<Void, Void, Profile?>() {
+//                override fun doInBackground(vararg params: Void?): Profile? {
+//                    val response = okHttpClient.newCall(request).execute()
+//                    val kbResponse = JSONObject(response.body()!!.string()).getKBResponse()
+//                    return if (kbResponse.successful) {
+//                        val jsonObj = JSONObject(kbResponse.result)
+//                        jsonObj.toProfile()
+//                    } else {
+//                        val kbError = kbResponse.error
+//                        null
+//                        //
+//                    }
+//                }
+//
+//                override fun onPostExecute(profile: Profile?) {
+//                    if(profile != null) {
+//                        sharedPreference.save(SharedPreferenceKB.SERVER_URL, this@LoginActivity.server_url)
+//                        sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, this@LoginActivity.kbToken)
+//                        sharedPreference.save(SharedPreferenceKB.USERNAME, this@LoginActivity.username)
+//                        Toast.makeText(this@LoginActivity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        intent.putExtra("profile", profile)
+//                        startActivity(intent)
+//                    }
+//                }
+//            }.execute()
         }
     }
 
@@ -114,5 +121,44 @@ class LoginActivity : AppCompatActivity() {
         }
         serverURL += JSONRPC_ULR
         return serverURL
+    }
+
+    private class ProfileConfigurationAsyncTask internal constructor(context: LoginActivity, val client: OkHttpClient) : AsyncTask<Void, Void, KBResponse>() {
+        private val activityReference: WeakReference<LoginActivity> = WeakReference(context)
+        private lateinit var profile: Profile
+
+        override fun doInBackground(vararg params: Void?): KBResponse {
+            val activity = activityReference.get()!!
+            val kbResponse = TimesExecutor().times(3).execute(OkHttpClient::newCall, client, activity.createRequestForProfile())
+            if (kbResponse.successful) {
+                profile = JSONObject(kbResponse.result).toProfile()
+            }
+            return kbResponse
+        }
+
+        override fun onPostExecute(response: KBResponse) {
+            val activity = activityReference.get()!!
+            val sharedPreference = SharedPreferenceKB(activity)
+            if(this::profile.isInitialized) {
+                sharedPreference.save(SharedPreferenceKB.SERVER_URL, activity.server_url)
+                sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, activity.kbToken)
+                sharedPreference.save(SharedPreferenceKB.USERNAME, activity.username)
+                Toast.makeText(activity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
+                val intent = Intent(activity, MainActivity::class.java)
+                intent.putExtra("profile", profile)
+                activity.startActivity(intent)
+                return
+            }
+
+            var message = activity.getString(R.string.standard_erro_message)
+            if (response.conectionError != null) message += "\n" + activity.getString(R.string.connection_error_message)
+            AlertDialog.Builder(activity)
+                .setMessage(message)
+                .setNeutralButton("Ok") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
     }
 }

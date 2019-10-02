@@ -54,4 +54,5 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'io.noties.markwon:core:4.1.1'
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }

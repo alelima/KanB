@@ -43,7 +43,7 @@ class ProjectListFragment : Fragment() {
         return rootView
     }
 
-    private fun configureRefresh(rootView: View, projectAdapter: ProjectAdapter) {
+    private fun configureRefresh(rootView: View) {
         val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.swipe_container)
         refreshLayout.setOnRefreshListener {
             this.loadList {
@@ -52,14 +52,14 @@ class ProjectListFragment : Fragment() {
         }
     }
 
-    fun configureList(projectList: MutableList<Project>): ProjectAdapter {
-        val viewManager = LinearLayoutManager(activity!!)
-        val viewAdapter = ProjectAdapter(profile, projectList)
-        val listView = rootView.findViewById<RecyclerView>(R.id.project_list)
-        listView.layoutManager = viewManager
-        listView.adapter = viewAdapter
-
-        return viewAdapter
+    fun configureList(projectList: MutableList<Project>) {
+        if(activity != null) {
+            val viewManager = LinearLayoutManager(activity!!)
+            val viewAdapter = ProjectAdapter(profile, projectList)
+            val listView = rootView.findViewById<RecyclerView>(R.id.project_list)
+            listView.layoutManager = viewManager
+            listView.adapter = viewAdapter
+        }
     }
 
     private fun configureFAB(rootView: View) {
@@ -90,28 +90,14 @@ class ProjectListFragment : Fragment() {
                     project.projectRole = role
                     project.board = loadBoard(project.id)
                     projectList.add(project)
-
                 }
-
-
-//                var keysList = jsonObject.keys()
-//                this@ProjectAdapter.list = mutableListOf<Project>()
-//                keysList.forEach {
-//                    val id = it
-//                    val userId = this@ProjectAdapter.profile.id
-//                    val projectRole = loadRole(id, userId)
-//                    val name = jsonObject.getString(id)
-//                    val project = Project(id, name)
-//                    project.projectRole = projectRole
-//                    project.board = loadBoard(id)
-//                    list.add(project)
-//                }
             }
             override fun onPostExecute(result: Unit?) {
                 if(this@ProjectListFragment::progressBar.isInitialized) {
                     progressBar.visibility = View.GONE
                 }
-                configureRefresh(rootView, this@ProjectListFragment.configureList(projectList))
+                this@ProjectListFragment.configureList(projectList)
+                configureRefresh(rootView)
                 callback()
             }
         }.execute()

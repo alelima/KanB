@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">KanB</string>
+    <string name="standard_erro_message">Ocorreu um erro no aplicativo</string>
+    <string name="connection_error_message">Não foi possível se conectar ao Kanboard, tente de novo mais tarde</string>
     <string name="menu_projects">Meus Projetos</string>
     <string name="menu_tasks">Minhas Tarefas</string>
     <string name="menu_perfil">Meu Perfil</string>
