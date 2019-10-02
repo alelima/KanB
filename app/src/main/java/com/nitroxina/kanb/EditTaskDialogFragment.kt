@@ -154,7 +154,7 @@ class EditTaskDialogFragment : DialogFragment() {
             assigneeSpinnerDropdown.setText(selectedItem?.name, false)
             task?.owner_id = selectedItem?.id?.toInt()
         }
-        assigneeSpinnerDropdown.setText(task?.owner_name, false)
+        assigneeSpinnerDropdown.setText(task?.assignee_name, false)
     }
 
     private fun populatePriorities() {
@@ -244,9 +244,6 @@ class EditTaskDialogFragment : DialogFragment() {
                         val id = it
                         val name = jsonObject.getString(id)
                         this@EditTaskDialogFragment.assigUserList.add(AssignableUser(id, name))
-                        if(id == this@EditTaskDialogFragment.task?.owner_id?.toString()) {
-                            task?.owner_name = name
-                        }
                     }
                 }
             }

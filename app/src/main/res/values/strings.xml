@@ -58,5 +58,14 @@
     <string name="profile_status_active">Ativo</string>
     <string name="profile_status_inactive">Inativo</string>
     <string name="profile_none">Não informado</string>
+    <string name="task_assignee_person">Designado(a):</string>
+    <string name="task_creator">Criador(a):</string>
+    <string name="task_swimlane">Raia:</string>
+    <string name="task_column">Coluna:</string>
+    <string name="task_position">Posição:</string>
+    <string name="task_date_init">Começado:</string>
+    <string name="task_date_created">Criado:</string>
+    <string name="task_date_modified">Modificado:</string>
+    <string name="task_date_moved">Movido:</string>
 
 </resources>

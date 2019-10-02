@@ -109,6 +109,7 @@ fun JSONObject.toTask() : Task {
     val projectName = this.optionString("project_name")
     val url = this.optionString("url")// optionString("url")
     val columnId = this.optionString("column_id")
+    val columnName = this.optionString("column_name")
     val creatorId = this.optionString("creator_id")
     val dateCompleted = this.optionString("date_completed")
     val dateModification = this.optionString("date_modification")
@@ -131,13 +132,15 @@ fun JSONObject.toTask() : Task {
     val reference = this.optionString("reference")
     val score = this.optInt("score")
     val swimlaneId = this.optionString("swimlane_id")
+    val swimlaneName = this.optionString("swimlane_name")
     val timeEstimated = this.optionString("time_estimated")
+    val assigneeName = this.optionString("assignee_name")
 
     return Task(title, projectId, id, dateCreation, dateDue, categoryId, colorId, timeSpent, projectName, url,
-        columnId, creatorId, dateCompleted, dateModification, dateMoved, dateStarted, description,
+        columnId, columnName, creatorId, dateCompleted, dateModification, dateMoved, dateStarted, description,
         externalProvider, externalUri, isActive, ownerId, position, priority, recurrenceBasedate, recurrenceChild,
         recurrenceFactor, recurrenceParent, recurrenceStatus, recurrenceTimeFrame, recurrenceTrigger, reference,
-        score, swimlaneId, timeEstimated)
+        score, swimlaneId, swimlaneName, timeEstimated, assigneeName)
 }
 
 fun JSONObject.toProfile() : Profile {

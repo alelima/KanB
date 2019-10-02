@@ -1,6 +1,7 @@
 package com.nitroxina.kanb.adapter
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.AsyncTask
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -118,6 +119,8 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
                     findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
                 }
                 val projectCard = findViewById<MaterialCardView>(R.id.project_card)
+                projectCard.strokeColor = Color.GRAY
+                projectCard.strokeWidth = 3
                 projectCard.setOnClickListener {
                     val context = holder.projectItemView.context
                     val intent = Intent(context, BoardActivity::class.java)

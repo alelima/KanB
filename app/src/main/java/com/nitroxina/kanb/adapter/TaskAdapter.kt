@@ -3,6 +3,7 @@ package com.nitroxina.kanb.adapter
 import android.annotation.TargetApi
 import android.graphics.Color
 import android.os.AsyncTask
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -27,8 +28,6 @@ import com.nitroxina.kanb.extensions.scaleHeight
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
-    private val expandHeight : Int = 1020
-
     init {
         loadList()
     }
@@ -49,6 +48,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 for(i in 1..jsonList.length()){
                     val jsonObject = jsonList[i-1] as JSONObject
                     val task = jsonObject.toTask()
+                    loadTaskUsers(task)
                     list.add(task)
                 }
             }
@@ -59,6 +59,10 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
         }.execute()
     }
 
+    private fun loadTaskUsers(task: Task) {
+
+    }
+
     override fun getItemCount(): Int = this.list.size
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
@@ -67,36 +71,18 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 val task = this@TaskAdapter.list[position]
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_title).text = task.title
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "#${task.id}"
-                findViewById<View>(com.nitroxina.kanb.R.id.line_color).setBackgroundColor(Color.parseColor(task.color_id))
+                val colorLine : View = findViewById<View>(com.nitroxina.kanb.R.id.line_color)
+                colorLine.setBackgroundColor(Color.parseColor(task.color_id))
 
-//                val descriptionTxtView = findViewById<TextView>(com.nitroxina.kanb.R.id.descriptionView)
-//                if(!descriptionTxtView.text.isNullOrBlank() && !task.description.isNullOrEmpty()) {
-//                    Markwon.create(descriptionTxtView.context).setMarkdown(descriptionTxtView, task.description!!)
-//                }
-//                descriptionTxtView.visibility = View.GONE
-
-                var minHeight = 0
                 val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
                 @TargetApi(21)
                 card.elevation = 4.0f
-                card.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-                        override fun onPreDraw(): Boolean {
-                            card.viewTreeObserver.removeOnPreDrawListener(this)
-                            minHeight = card.height
-                            val layoutParams = card.layoutParams
-                            layoutParams.height = minHeight
-                            card.layoutParams = layoutParams
-                            return true
-                        }
-                })
+//                card.strokeColor = Color.GRAY
+//                card.strokeWidth = 3
                 card.setOnClickListener {
-                    it as MaterialCardView
-                    if (it.height == minHeight) { //if is collapsed
-                        it.scaleHeight(expandHeight)
-                        //descriptionTxtView.visibility = View.VISIBLE
-                    } else {
-                        //descriptionTxtView.visibility = View.GONE
-                        it.scaleHeight(minHeight)
+                    val context = card.context
+                    if (context is MainActivity) {
+                        context.navigateTo(MainActivity.TASK_DETAIL_FRAGMENT, toBundle(task))
                     }
                 }
 
@@ -131,5 +117,11 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
     }
 
     class TaskViewHolder(val taskItemView: View) : RecyclerView.ViewHolder(taskItemView)
+
+    fun toBundle(task: Task) : Bundle {
+        val bundle = Bundle()
+        bundle.putSerializable("task", task)
+        return bundle
+    }
 
 }

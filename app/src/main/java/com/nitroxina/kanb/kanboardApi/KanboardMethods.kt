@@ -3,6 +3,7 @@ package com.nitroxina.kanb.kanboardApi
 // QUERYS
 const val GET_ME =  "getMe"
 const val GET_MY_DASHBOARD = "getMyDashboard"
+const val GET_USER = "getUser"
 
 //PROJECT
 const val GET_MY_PROJECTS = "getMyProjects" // projects with details

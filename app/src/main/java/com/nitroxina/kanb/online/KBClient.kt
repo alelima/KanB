@@ -5,7 +5,7 @@ import com.nitroxina.kanb.extensions.getKBResponse
 import com.nitroxina.kanb.kanboardApi.KB_URL
 import okhttp3.*
 import org.json.JSONObject
-
+import java.lang.Exception
 
 
 object KBClient {
@@ -52,8 +52,16 @@ object KBClient {
             .url("$KB_URL")
             .post(body)
             .build()
+
+//        var jsonObj :JSONObject? = null
+//        try {
+//
+//        } catch (e: Exception) {
+//            //TODO: tratar erro aqui, realizar reconexão algumas vezes, dar mensagem para o usuário após tentar
+//        }
+
         val response = okHttpClient.newCall(request).execute()
-        val jsonObj = JSONObject(response.body()!!.string())
+        var jsonObj = JSONObject(response.body()!!.string())
         return jsonObj.getKBResponse()
     }
 }

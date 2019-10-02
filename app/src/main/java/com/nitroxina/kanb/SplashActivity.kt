@@ -1,6 +1,9 @@
 package com.nitroxina.kanb
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -37,8 +40,14 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         delayHandler = Handler()
         delayHandler!!.postDelayed(mRunnable, SPLASH_DELAY)
-        loadProfile()
 
+        val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        if (activeNetwork?.isConnected!!)  {
+            loadProfile()
+        } else {
+            //TODO: dar uma mensagem de que não há internte e fechar o aplicativo
+        }
     }
 
     public override fun onDestroy() {

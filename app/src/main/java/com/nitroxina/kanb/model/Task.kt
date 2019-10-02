@@ -18,6 +18,7 @@ class Task(
     var project_name: String? = null,
     val url: String? = null,
     var column_id: String? = null,
+    var column_name: String? = null,
     val creator_id: String? = null,
     val date_completed: String? = null,
     val date_modification: String? = null,
@@ -40,11 +41,13 @@ class Task(
     var reference: String? = null,
     var score: Int? = null,
     var swimlane_id: String? = null,
+    var swimlane_name: String? = null,
     var time_estimated: String? = null,
+    var assignee_name: String? = null,
     val color: Color? = null
 ) : Serializable {
     var category_name: String? = ""
-    var owner_name: String? = ""
+    var creator_name: String = ""
     val subTasks: MutableList<SubTask> = mutableListOf<SubTask>()
     var date_started: String? = null
         set(value) {
