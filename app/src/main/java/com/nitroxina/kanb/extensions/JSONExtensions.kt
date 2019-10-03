@@ -72,7 +72,7 @@ fun JSONObject.toProject() : Project {
     val isPublic= this.optionString("is_public")
     val isPrivate= this.optionString("is_private")
     val defaultSwimlane= this.optionString("default_swimlane")
-    val showDefaultSwimlane= this.getInt("show_default_swimlane")
+    val showDefaultSwimlane= this.optInt("show_default_swimlane")
     val description= this.optionString("description")
     val identifier= this.optionString("identifier")
     val columns = this.optionString("columns")

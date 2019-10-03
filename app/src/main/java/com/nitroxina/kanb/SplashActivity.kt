@@ -11,6 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.nitroxina.kanb.extensions.toProfile
 import com.nitroxina.kanb.kanboardApi.GET_ME
+import com.nitroxina.kanb.kanboardApi.kbToken
+import com.nitroxina.kanb.kanboardApi.server_url
+import com.nitroxina.kanb.kanboardApi.username
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.online.KBClient
 import com.nitroxina.kanb.online.KBResponse
@@ -72,9 +75,9 @@ class SplashActivity : AppCompatActivity() {
 
     private fun isUsernameAndTokenStored(): Boolean {
         val sharedPreference = SharedPreferenceKB(this)
-        val server_url =  sharedPreference.getValueString(SharedPreferenceKB.SERVER_URL)
-        val kbToken =  sharedPreference.getDecriptValueString(SharedPreferenceKB.TOKEN)
-        val username =  sharedPreference.getValueString(SharedPreferenceKB.USERNAME)
+        server_url =  sharedPreference.getValueString(SharedPreferenceKB.SERVER_URL)
+        kbToken =  sharedPreference.getDecriptValueString(SharedPreferenceKB.TOKEN)
+        username =  sharedPreference.getValueString(SharedPreferenceKB.USERNAME)
         return !(server_url.isNullOrBlank() || kbToken.isNullOrBlank() || username.isNullOrBlank())
     }
 

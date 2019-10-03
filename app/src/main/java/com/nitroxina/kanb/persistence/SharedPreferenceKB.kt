@@ -15,6 +15,7 @@ class SharedPreferenceKB(val context: Context) {
         val SERVER_URL = "server_url"
         val USERNAME = "username"
         val TOKEN = "token"
+        val SSL = "ssl"
     }
 
     val sharedPref: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

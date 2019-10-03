@@ -10,20 +10,18 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.nitroxina.kanb.extensions.getKBResponse
 import com.nitroxina.kanb.extensions.toProfile
-import com.nitroxina.kanb.kanboardApi.GET_ME
-import com.nitroxina.kanb.kanboardApi.JSONRPC_ULR
+import com.nitroxina.kanb.kanboardApi.*
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.online.KBResponse
 import com.nitroxina.kanb.online.TimesExecutor
+import com.nitroxina.kanb.online.UnsfOkHttpClient
 import com.nitroxina.kanb.persistence.SharedPreferenceKB
 import okhttp3.*
 import org.json.JSONObject
 import java.lang.ref.WeakReference
+import javax.net.ssl.SSLHandshakeException
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var server_url:String
-    private lateinit var username:String
-    private lateinit var kbToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,21 +41,22 @@ class LoginActivity : AppCompatActivity() {
             //mensagem de que é necessário preencher username e token
             return
         } else {
-            this.username = usernameFromView
-            this.kbToken = kbTokenFromView
-            this.server_url = generateCompleteServerURL(serverFromView)
+            username = usernameFromView
+            kbToken = kbTokenFromView
+            server_url = generateCompleteServerURL(serverFromView)
         }
 
         //val Credential = Credential(username, kbToken)
 
-        testCredential()
+        testCredential(true)
     }
 
-    private fun testCredential() {
+    private fun testCredential(safeSSL: Boolean) {
+        ssl = safeSSL
 
-        if(this::username.isInitialized && this::kbToken.isInitialized) {
+        if(!username.isNullOrEmpty() && !kbToken.isNullOrEmpty()) {
             val authenticator = object : Authenticator {
-                override fun authenticate(route: Route, response: Response): Request? {
+                override fun authenticate(route: Route?, response: Response): Request? {
                     if (response.request().header("Authorization") != null) {
                         return null // Give up, we've already attempted to authenticate.
                     }
@@ -68,39 +67,15 @@ class LoginActivity : AppCompatActivity() {
                         .build()
                 }
             }
-            val okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()
-            val request = createRequestForProfile()
 
-            ProfileConfigurationAsyncTask(this,okHttpClient).execute()
+            var okHttpClient : OkHttpClient?
+            if(safeSSL) {
+                okHttpClient = OkHttpClient.Builder().authenticator(authenticator).build()
+            } else {
+                okHttpClient = UnsfOkHttpClient.getUnsafeOkHttpClient(authenticator)
+            }
 
-//            val sharedPreference = SharedPreferenceKB(this)
-//
-//            object : AsyncTask<Void, Void, Profile?>() {
-//                override fun doInBackground(vararg params: Void?): Profile? {
-//                    val response = okHttpClient.newCall(request).execute()
-//                    val kbResponse = JSONObject(response.body()!!.string()).getKBResponse()
-//                    return if (kbResponse.successful) {
-//                        val jsonObj = JSONObject(kbResponse.result)
-//                        jsonObj.toProfile()
-//                    } else {
-//                        val kbError = kbResponse.error
-//                        null
-//                        //
-//                    }
-//                }
-//
-//                override fun onPostExecute(profile: Profile?) {
-//                    if(profile != null) {
-//                        sharedPreference.save(SharedPreferenceKB.SERVER_URL, this@LoginActivity.server_url)
-//                        sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, this@LoginActivity.kbToken)
-//                        sharedPreference.save(SharedPreferenceKB.USERNAME, this@LoginActivity.username)
-//                        Toast.makeText(this@LoginActivity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
-//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-//                        intent.putExtra("profile", profile)
-//                        startActivity(intent)
-//                    }
-//                }
-//            }.execute()
+            ProfileConfigurationAsyncTask(this, okHttpClient!!).execute()
         }
     }
 
@@ -140,13 +115,31 @@ class LoginActivity : AppCompatActivity() {
             val activity = activityReference.get()!!
             val sharedPreference = SharedPreferenceKB(activity)
             if(this::profile.isInitialized) {
-                sharedPreference.save(SharedPreferenceKB.SERVER_URL, activity.server_url)
-                sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, activity.kbToken)
-                sharedPreference.save(SharedPreferenceKB.USERNAME, activity.username)
+                sharedPreference.save(SharedPreferenceKB.SERVER_URL, server_url!!)
+                sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, kbToken!!)
+                sharedPreference.save(SharedPreferenceKB.USERNAME, username!!)
+                sharedPreference.save(SharedPreferenceKB.SSL, ssl!!)
                 Toast.makeText(activity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, MainActivity::class.java)
                 intent.putExtra("profile", profile)
                 activity.startActivity(intent)
+                return
+            }
+
+            if (response.conectionError?.exception is SSLHandshakeException) {
+                AlertDialog.Builder(activity)
+                    .setMessage("O Kanboard que você está tentando acessar não possui um certificado instalado no seu dispositivo móvel, " +
+                            "se você confia neste site clique ok senão clique em cancelar. Você pode também procurar " +
+                            "o suporte do site para instalar a cadeia de certificados no seu dispositivo")
+                    .setNeutralButton("Ok") { dialog, _ ->
+                        dialog.dismiss()
+                        activity.testCredential(false)
+                    }
+                    .setNegativeButton("cancelar") {dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
                 return
             }
 
