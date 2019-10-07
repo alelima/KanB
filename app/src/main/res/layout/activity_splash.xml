@@ -4,26 +4,16 @@
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F2F2F2"
         tools:context=".SplashActivity">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-    <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/fullscreen_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="robo"
-            android:gravity="center"
-            android:keepScreenOn="true"
-            android:text="@string/splash_text"
-            android:textAllCaps="false"
-            android:textColor="#834B46"
-            android:textSize="36sp"
-            android:textStyle="bold"
+    <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-            android:textStyle="bold"/>
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/kanb_splash" />
 </androidx.constraintlayout.widget.ConstraintLayout>

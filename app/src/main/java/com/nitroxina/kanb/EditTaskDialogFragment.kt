@@ -23,6 +23,7 @@ import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
 import com.nitroxina.kanb.model.AssignableUser
 import com.nitroxina.kanb.model.Category
 import com.nitroxina.kanb.model.Task
+import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.online.KBClient
 import com.nitroxina.kanb.viewcomponents.DateHourMask
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
@@ -73,7 +74,8 @@ class EditTaskDialogFragment : DialogFragment() {
         if(task?.id != null) {
             rootView.findViewById<TextInputEditText>(R.id.task_title).setText(task!!.title)
             rootView.findViewById<TextInputEditText>(R.id.task_description).setText(task!!.description)
-            rootView.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(task!!.color_id))
+            rootView.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(
+                TaskColor.hexaBackgroundColorOf(task!!.color_id!!)))
             rootView.findViewById<TextInputEditText>(R.id.date_start).setText(task!!.date_started)
             rootView.findViewById<TextInputEditText>(R.id.date_due).setText(task!!.date_due)
             rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).setText(task!!.time_estimated)
@@ -93,30 +95,44 @@ class EditTaskDialogFragment : DialogFragment() {
     private fun configColorButton() {
         val colorButton = rootView.findViewById<MaterialButton>(R.id.color_button)
         colorButton.setOnClickListener {
+            it as MaterialButton
             ColorSheet().colorPicker(
                 colors = intArrayOf(
-                    Color.parseColor("yellow"),
-                    Color.parseColor("blue"),
-                    Color.parseColor("green"),
-                    Color.parseColor("purple"),
-                    Color.parseColor("red"),
-                    //Color.parseColor("orange"),
-                    Color.parseColor("gray")
-                   // Color.parseColor("brown"),
-                   // Color.parseColor("pink"),
-                   // Color.parseColor("teal"),
-                   // Color.parseColor("cyan"),
-                   // Color.parseColor("lime"),
-                   // Color.parseColor("amber")
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("yellow")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("blue")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("green")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("purple")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("red")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("orange")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("grey")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("brown")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("deep_orange")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("dark_grey")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("pink")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("teal")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("cyan")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("lime")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("light_green")),
+                    Color.parseColor(TaskColor.hexaBackgroundColorOf("amber"))
                 ),
                 listener = { color ->
                     when (color) {
-                        Color.parseColor("red") -> changeColor(it, "red")
-                        Color.parseColor("blue") -> changeColor(it, "blue")
-                        Color.parseColor("yellow") -> changeColor(it, "yellow")
-                        Color.parseColor("purple") -> changeColor(it, "purple")
-                        Color.parseColor("green") -> changeColor(it, "green")
-                        Color.parseColor("gray") -> changeColor(it, "gray")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("yellow")) -> changeColor(it, "yellow")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("blue")) -> changeColor(it, "blue")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("green")) -> changeColor(it, "green")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("purple")) -> changeColor(it, "purple")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("red")) -> changeColor(it, "red")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("orange")) -> changeColor(it, "orange")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("grey")) -> changeColor(it, "grey")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("brown")) -> changeColor(it, "brown")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("deep_orange")) -> changeColor(it, "deep_orange")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("dark_grey")) -> changeColor(it, "dark_grey")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("pink")) -> changeColor(it, "pink")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("teal")) -> changeColor(it, "teal")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("cyan")) -> changeColor(it, "cyan")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("lime")) -> changeColor(it, "lime")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("light_green")) -> changeColor(it, "light_green")
+                        Color.parseColor(TaskColor.hexaBackgroundColorOf("amber")) -> changeColor(it, "amber")
                     }
                 }
             ).show(fragmentManager!!)
@@ -255,8 +271,8 @@ class EditTaskDialogFragment : DialogFragment() {
         }.execute()
     }
 
-    private fun changeColor(view: View, colorName: String) {
-        view.setBackgroundColor(Color.parseColor(colorName))
+    private fun changeColor(button: MaterialButton, colorName: String) {
+        button.setBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(colorName)))
         task?.color_id = colorName
     }
 

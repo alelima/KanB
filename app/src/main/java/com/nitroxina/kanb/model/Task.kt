@@ -10,7 +10,7 @@ class Task(
     var title: String,
     val project_id: String,
     var id: String? = null,
-    val date_creation: String? = null,
+    _date_creation: String? = null,
     _date_due: String? = null,
     var category_id: Int? = null,
     var color_id: String? = null,
@@ -20,9 +20,9 @@ class Task(
     var column_id: String? = null,
     var column_name: String? = null,
     val creator_id: String? = null,
-    val date_completed: String? = null,
-    val date_modification: String? = null,
-    val date_moved: String? = null,
+    _date_completed: String? = null,
+    _date_modification: String? = null,
+    _date_moved: String? = null,
     _date_started: String? = null,
     var description: String? = null,
     val external_provider: String? = null,
@@ -44,7 +44,7 @@ class Task(
     var swimlane_name: String? = null,
     var time_estimated: String? = null,
     var assignee_name: String? = null,
-    val color: Color? = null
+    val color: TaskColor? = null
 ) : Serializable {
     var category_name: String? = ""
     var creator_name: String = ""
@@ -67,10 +67,50 @@ class Task(
                 field = value
             }
         }
+    var date_modification: String? = null
+        set(value) {
+            if(!value.isNullOrBlank() && value.isNumber()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            } else {
+                field = value
+            }
+        }
+    var date_moved: String? = null
+        set(value) {
+            if(!value.isNullOrBlank() && value.isNumber()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            } else {
+                field = value
+            }
+        }
+    var date_completed: String? = null
+        set(value) {
+            if(!value.isNullOrBlank() && value.isNumber()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            } else {
+                field = value
+            }
+        }
+    var date_creation: String? = null
+        set(value) {
+            if(!value.isNullOrBlank() && value.isNumber()) {
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                field = formatter.format(Date((value + "000").toLong()))
+            } else {
+                field = value
+            }
+        }
 
     init {
         date_started = _date_started
         date_due = _date_due
+        date_modification = _date_modification
+        date_moved = _date_moved
+        date_completed = _date_completed
+        date_creation = _date_creation
     }
 
     fun toJsonUpdateParameters(): String {

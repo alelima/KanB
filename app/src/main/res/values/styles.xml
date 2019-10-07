@@ -7,9 +7,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <item name="textInputStyle">@style/AppTextField</item>
+    </style>
+
+    <style name="AppThemeNoActionBar" parent = "Theme.MaterialComponents.NoActionBar.Bridge">
+        <!-- Customize your theme here. -->
     </style>
     <style name="AppTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 

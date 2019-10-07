@@ -118,4 +118,9 @@ class ProjectListFragment : Fragment() {
         val jsonArray = JSONArray(kbResponse.result)
         return jsonArray.toBoard()
     }
+
+    override fun onResume() {
+        (activity!! as MainActivity).actualFragment = MainActivity.PROJECT_LIST_FRAGMENT
+        super.onResume()
+    }
 }

@@ -1,9 +1,12 @@
 package com.nitroxina.kanb
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomappbar.BottomAppBar
@@ -14,7 +17,7 @@ import com.nitroxina.kanb.model.Profile
 class MainActivity : AppCompatActivity() {
 
     private var profile: Profile? = null
-    private var atualFragment: String = ""
+    var actualFragment: String = ""
 
     private val fragments = mapOf(PROJECT_LIST_FRAGMENT to ::ProjectListFragment,
         TASK_LIST_FRAGMENT to ::TasksListFragment, PROFILE_FRAGMENT to ::ProfileFragment,
@@ -33,15 +36,15 @@ class MainActivity : AppCompatActivity() {
         profile =  intent.getSerializableExtra("profile") as Profile
         setContentView(R.layout.activity_main)
         configureBottomMenu()
-        navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
+        if(savedInstanceState == null) {
+            navigateTo(PROJECT_LIST_FRAGMENT, getProfileBundle())
+        }
     }
 
     fun navigateTo(item: String, bundle: Bundle? = null) {
-        if(atualFragment == item) {
-            return
-        }
-        this.atualFragment = item
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if(actualFragment == item) return
+
+        supportFragmentManager.popBackStack(actualFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         val fragmentInstance: Fragment = fragments[item]?.invoke()!!
         bundle?.let { fragmentInstance.arguments = it }
         supportFragmentManager

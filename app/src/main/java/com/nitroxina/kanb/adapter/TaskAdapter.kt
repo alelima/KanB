@@ -16,7 +16,6 @@ import com.nitroxina.kanb.online.KBClient
 import com.nitroxina.kanb.extensions.toTask
 import org.json.JSONArray
 import org.json.JSONObject
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
@@ -24,7 +23,7 @@ import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
 import com.nitroxina.kanb.model.Profile
-import com.nitroxina.kanb.extensions.scaleHeight
+import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
@@ -72,12 +71,12 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_title).text = task.title
                 findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "#${task.id}"
                 val colorLine : View = findViewById<View>(com.nitroxina.kanb.R.id.line_color)
-                colorLine.setBackgroundColor(Color.parseColor(task.color_id))
+                colorLine.setBackgroundColor(Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!)))
 
                 val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
                 @TargetApi(21)
                 card.elevation = 4.0f
-//                card.strokeColor = Color.GRAY
+//                card.strokeColor = TaskColor.GRAY
 //                card.strokeWidth = 3
                 card.setOnClickListener {
                     val context = card.context

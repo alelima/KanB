@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.nitroxina.kanb.MainActivity.Companion.TASK_LIST_FRAGMENT
 import com.nitroxina.kanb.adapter.TaskAdapter
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
@@ -52,6 +53,11 @@ class TasksListFragment : Fragment() {
         taskViewModel.dataTask.observe(this, Observer {
             onResume()
         })
+    }
+
+    override fun onResume() {
+        (activity!! as MainActivity).actualFragment = TASK_LIST_FRAGMENT
+        super.onResume()
     }
 
 }

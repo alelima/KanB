@@ -24,20 +24,21 @@ import java.lang.ref.WeakReference
 
 class SplashActivity : AppCompatActivity() {
     private var delayHandler: Handler? = null
-    private val SPLASH_DELAY: Long = 200000
+    private val SPLASH_DELAY: Long = 2000
     private lateinit var profile: Profile
 
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
-            var intent: Intent? = null
-            if(this::profile.isInitialized) {
-                intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("profile", profile)
-            } else {
-                intent = Intent(this, LoginActivity::class.java)
-            }
-            startActivity(intent)
-            finish()
+//            var intent: Intent? = null
+//            if(this::profile.isInitialized) {
+//                intent = Intent(this, MainActivity::class.java)
+//                intent.putExtra("profile", profile)
+//            } else {
+//                intent = Intent(this, LoginActivity::class.java)
+//            }
+//            startActivity(intent)
+//            finish()
+            loadProfile()
         }
     }
 
@@ -50,7 +51,7 @@ class SplashActivity : AppCompatActivity() {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         if (activeNetwork?.isConnected!!)  {
-            loadProfile()
+            //loadProfile()
         } else {
             //TODO: dar uma mensagem de que não há internte e fechar o aplicativo
         }

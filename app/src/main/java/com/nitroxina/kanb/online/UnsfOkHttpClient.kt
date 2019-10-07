@@ -9,11 +9,6 @@ import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-
-//class UnsfOkHttpClient {
-//
-//}
-
 class UnsfOkHttpClient {
 
     companion object {

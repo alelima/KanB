@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.model.Task
+import com.nitroxina.kanb.model.TaskColor
 import io.noties.markwon.Markwon
 
 class TaskDetailFragment : Fragment(){
@@ -26,9 +27,9 @@ class TaskDetailFragment : Fragment(){
     private fun updateView(task: Task) {
         this.rootView.apply {
             val cardView = findViewById<MaterialCardView>(R.id.task_detail_card)
-            cardView.strokeColor = Color.parseColor(task.color_id)
+            cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
             cardView.strokeWidth = 4
-            cardView.setCardBackgroundColor(Color.parseColor(task.color_id))
+            cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
             cardView.background.alpha = 75
 
             findViewById<TextView>(R.id.task_title).text = task.title
@@ -50,6 +51,11 @@ class TaskDetailFragment : Fragment(){
                 Markwon.create(descriptionTxtView.context).setMarkdown(descriptionTxtView, task.description!!)
             }
         }
+    }
+
+    override fun onResume() {
+        (activity!! as MainActivity).actualFragment = MainActivity.TASK_DETAIL_FRAGMENT
+        super.onResume()
     }
 
 }

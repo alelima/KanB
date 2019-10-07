@@ -1,11 +1,14 @@
 package com.nitroxina.kanb
 
+import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.nitroxina.kanb.extensions.getKBResponse
@@ -30,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         buttonSave.setOnClickListener {
             createTestAndSaveCredential()
         }
+        configureAutoHiddenKeyboard()
     }
 
     private fun createTestAndSaveCredential() {
@@ -152,6 +156,15 @@ class LoginActivity : AppCompatActivity() {
                 }
                 .create()
                 .show()
+        }
+    }
+
+    private fun configureAutoHiddenKeyboard() {
+        //Esconder o teclado
+        val mainContainer = findViewById<ConstraintLayout>(R.id.container)
+        mainContainer.setOnTouchListener { v, event ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
 }

@@ -14,6 +14,7 @@ import com.nitroxina.kanb.R
 import com.nitroxina.kanb.kanboardApi.KBProjectRole
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
+import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import java.util.ArrayList
 
@@ -28,7 +29,7 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
         val task = (this.columns[column_position] as Column).objects[item_position] as Task
         itemView.findViewById<TextView>(R.id.task_title).text = task.title
         itemView.findViewById<TextView>(R.id.task_id).text = task.id
-        itemView.setBackgroundColor(Color.parseColor(task.color_id!!))
+        itemView.setBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
         itemView.background.alpha = 75
         return itemView
     }

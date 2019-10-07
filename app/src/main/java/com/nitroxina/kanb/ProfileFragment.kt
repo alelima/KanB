@@ -79,4 +79,9 @@ class ProfileFragment : Fragment(){
         }
     }
 
+    override fun onResume() {
+        (activity!! as MainActivity).actualFragment = MainActivity.PROFILE_FRAGMENT
+        super.onResume()
+    }
+
 }

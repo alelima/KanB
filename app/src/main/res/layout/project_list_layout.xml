@@ -41,12 +41,14 @@
     </FrameLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
+            android:backgroundTint="@color/colorDeepBlue"
             android:src="@drawable/ic_add_fab" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
