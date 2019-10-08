@@ -1,5 +1,6 @@
 package com.nitroxina.kanb.model
 
+import android.os.Bundle
 import com.nitroxina.kanb.extensions.isNumber
 import org.json.JSONObject
 import java.io.Serializable
@@ -188,6 +189,12 @@ class Task(
 //            json += "\"reference\": \"$reference\""
 //        }
         return json1
+    }
+
+    fun toBundle() : Bundle {
+        val bundle = Bundle()
+        bundle.putSerializable("task", this)
+        return bundle
     }
 }
 

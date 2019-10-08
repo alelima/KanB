@@ -81,7 +81,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 card.setOnClickListener {
                     val context = card.context
                     if (context is MainActivity) {
-                        context.navigateTo(MainActivity.TASK_DETAIL_FRAGMENT, toBundle(task))
+                        context.navigateTo(MainActivity.TASK_DETAIL_FRAGMENT, task.toBundle())
                     }
                 }
 
@@ -116,11 +116,5 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
     }
 
     class TaskViewHolder(val taskItemView: View) : RecyclerView.ViewHolder(taskItemView)
-
-    fun toBundle(task: Task) : Bundle {
-        val bundle = Bundle()
-        bundle.putSerializable("task", task)
-        return bundle
-    }
 
 }

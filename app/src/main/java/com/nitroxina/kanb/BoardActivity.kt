@@ -16,6 +16,8 @@ import org.json.JSONArray
 import java.util.ArrayList
 import android.view.MotionEvent
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.nitroxina.kanb.extensions.toBoard
 import com.nitroxina.kanb.kanboardApi.MOVE_TASK_POSITION
 import com.nitroxina.kanb.online.KBResponse
@@ -33,6 +35,20 @@ class BoardActivity : AppCompatActivity() {
         createBoard()
     }
 
+    fun openDetailTask(bundle: Bundle? = null) {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        val fragmentInstance: Fragment = ::TaskDetailFragment.invoke()!!
+        bundle?.let { fragmentInstance.arguments = it }
+        supportFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right)
+            .replace(R.id.fragment_container, fragmentInstance)
+            .addToBackStack(null)
+            .commit()
+    }
+
     fun createBoard() {
         val boardView = findViewById<View>(R.id.boardView) as BoardView
         boardView.SetColumnSnap(true)
@@ -47,7 +63,7 @@ class BoardActivity : AppCompatActivity() {
                 data.add(KBoardAdapter.KBColumn(it, list as ArrayList<Any>))
         }
         val boardAdapter = KBoardAdapter(this, data, project.projectRole, Project(project.id, project.name))
-        boardView. setAdapter(boardAdapter)
+        boardView.setAdapter(boardAdapter)
         boardView.setOnDoneListener { Log.e("scroll", "done") }
         boardView.setOnDragItemListener(object : BoardView.DragItemStartCallback {
             override fun startDrag(view: View, startItemPos: Int, startColumnPos: Int) {
@@ -72,10 +88,8 @@ class BoardActivity : AppCompatActivity() {
                     task.column_id = (endColumnPos + 1).toString()
                     task.swimlane_id = project.board!!.swimlanes[0].id
                     updateTaskPosition(task)
+                    (boardView.boardAdapter as KBoardAdapter).updateColumnHeadCount(startColumnPos, endColumnPos)
                 }
-
-                Log.d("BOARD", "Posicao inicial $startItemPos, Final: $endItemPos")
-                Log.d("BOARD", "Coluna inicial $startColumnPos, Final: $endColumnPos")
             }
         })
     }
@@ -111,9 +125,4 @@ class BoardActivity : AppCompatActivity() {
             }
         }.execute()
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        loadBoard()
-//    }
 }

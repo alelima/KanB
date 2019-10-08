@@ -30,7 +30,6 @@ class TaskDetailFragment : Fragment(){
             cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
             cardView.strokeWidth = 4
             cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
-            cardView.background.alpha = 75
 
             findViewById<TextView>(R.id.task_title).text = task.title
             findViewById<TextView>(R.id.task_status_value).text = task.is_active
