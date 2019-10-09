@@ -138,6 +138,10 @@ class Task(
         return json
     }
 
+    fun toJsonCloseParameters(): String {
+        return "{\"task_id\": ${this.id} }"
+    }
+
     private fun addJsonParameters(json: String): String {
         var json1 = json
         if (!color_id.isNullOrEmpty()) {

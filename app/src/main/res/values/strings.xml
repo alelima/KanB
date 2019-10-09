@@ -69,5 +69,8 @@
     <string name="task_date_created">Criado:</string>
     <string name="task_date_modified">Modificado:</string>
     <string name="task_date_moved">Movido:</string>
+    <string name="task_opt_finalize">Finalizar</string>
+    <string name="task_opt_edit">Editar</string>
+    <string name="task_message_finalize">Deseja mesmo finalizar essa tarefa?</string>
 
 </resources>

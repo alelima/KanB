@@ -1,6 +1,7 @@
 package com.nitroxina.kanb.adapter
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -17,14 +18,25 @@ import com.nitroxina.kanb.extensions.toTask
 import org.json.JSONArray
 import org.json.JSONObject
 import android.widget.ImageView
+import android.widget.PopupMenu
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
+import com.nitroxina.kanb.R
+import com.nitroxina.kanb.kanboardApi.CLOSE_TASK
+import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.TaskColor
+import com.nitroxina.kanb.online.KBResponse
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
+import org.joda.time.Days
+import java.lang.ref.WeakReference
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     init {
@@ -76,8 +88,6 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
                 @TargetApi(21)
                 card.elevation = 4.0f
-//                card.strokeColor = TaskColor.GRAY
-//                card.strokeWidth = 3
                 card.setOnClickListener {
                     val context = card.context
                     if (context is MainActivity) {
@@ -85,10 +95,18 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                     }
                 }
 
-                val buttonEdit = findViewById<MaterialButton>(com.nitroxina.kanb.R.id.edit_task_button)
-                buttonEdit.setOnClickListener {
-                    openTaskForEdition(holder.taskItemView, task)
+                val buttonOptions = findViewById<MaterialButton>(com.nitroxina.kanb.R.id.finalize_button)
+                buttonOptions.setOnClickListener {
+                    openOptions(holder.taskItemView, task, it)
                 }
+
+                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
+                val dateCreation = formatter.parse(task.date_creation)
+                val dateNow = Date()
+                val days = ((dateNow.time - dateCreation.time)/(1000*60*60*24))
+
+                findViewById<TextView>(com.nitroxina.kanb.R.id.task_days).text = days.toString() +"d"
+
                 val ownerIcon = findViewById<ImageView>(com.nitroxina.kanb.R.id.icon_owner)
                 ownerIcon.setImageResource(com.nitroxina.kanb.R.drawable.circle_bg)
                 val textOwnerIcon = findViewById<TextView>(com.nitroxina.kanb.R.id.icon_text)
@@ -99,13 +117,45 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
         }
     }
 
-    private fun openTaskForEdition(taskItemView: ViewGroup, task: Task) {
-        val context = taskItemView.context
+    private fun openTaskForEdition(context: Context, task: Task) {
         if (context is MainActivity) {
             val taskViewModel = ViewModelProviders.of(context).get(EditTaskViewModel::class.java)
             taskViewModel.dataTask.value = task
             EditTaskDialogFragment().show(context.supportFragmentManager, "edit_dialog")
         }
+    }
+
+    private fun finalizeTaskOption(context: Context, task: Task) {
+        AlertDialog.Builder(context)
+            .setMessage(context.getString(R.string.task_message_finalize))
+            .setNeutralButton("Ok") { dialog, _ ->
+                finalizeTask(context, task)
+                dialog.dismiss()
+            }
+            .setNegativeButton("cancelar") {dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun finalizeTask(context: Context, task: Task) {
+        FinalizeTaskAsyncTask(context, task).execute()
+    }
+
+    private fun openOptions(taskItemView: ViewGroup, task: Task, view: View) {
+        val context = taskItemView.context
+        val popupMenu = PopupMenu(context, view)
+        popupMenu.inflate(R.menu.task_menu_options_layout)
+        popupMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.task_opt_edit -> this.openTaskForEdition(context, task)
+                R.id.task_opt_finalize -> this.finalizeTaskOption(context, task)
+            }
+            true
+        }
+        popupMenu.show()
+        true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -117,4 +167,27 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
 
     class TaskViewHolder(val taskItemView: View) : RecyclerView.ViewHolder(taskItemView)
 
+    private class FinalizeTaskAsyncTask internal constructor(context: Context, val task: Task) : AsyncTask<Void, Void, KBResponse>() {
+        private val activityReference: WeakReference<Context> = WeakReference(context)
+
+        override fun doInBackground(vararg params: Void?): KBResponse {
+            val parameters = task.toJsonCloseParameters()
+            return KBClient.execute(CLOSE_TASK, parameters)
+        }
+
+        override fun onPostExecute(result: KBResponse) {
+            super.onPostExecute(result)
+            val context = activityReference.get()!!
+            if (!result.successful || result.conectionError != null) {
+                AlertDialog.Builder(context)
+                    .setMessage("Ocorreu um erro, tente novamente")
+                    .setNeutralButton("Ok") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+                return
+            }
+        }
+    }
 }
