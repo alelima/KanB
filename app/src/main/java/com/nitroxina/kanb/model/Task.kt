@@ -52,56 +52,56 @@ class Task(
     val subTasks: MutableList<SubTask> = mutableListOf<SubTask>()
     var date_started: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
     var date_due: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
     var date_modification: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
     var date_moved: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
     var date_completed: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
     var date_creation: String? = null
         set(value) {
-            if(!value.isNullOrBlank() && value.isNumber()) {
+            if(!value.isNullOrBlank() && value.isNumber() && value != "0") {
                 val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
                 field = formatter.format(Date((value + "000").toLong()))
             } else {
-                field = value
+                field = ""
             }
         }
 

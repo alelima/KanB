@@ -174,6 +174,17 @@ fun JSONObject.toProfile() : Profile {
         token, twofactorActivated, twofactorSecret)
 }
 
+fun JSONObject.toUser() : User {
+    val id = this.getString("id")
+    val username = this.getString("username")
+    val email = this.optionString("email")
+    val name = this.optionString("name")
+    val isActive = this.optionString("is_active").numberToBoolean()
+    val role = KBApplicationRole.getKBAplicationRole(this.optionString("role"))
+
+    return User(id, email, isActive, name, role, username)
+}
+
 fun JSONArray.toBoard() : Board {
     val board = Board()
     for(i in 1..this.length()){

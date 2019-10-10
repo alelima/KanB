@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg params: Void?): KBResponse {
             val activity = activityReference.get()!!
-            val kbResponse = TimesExecutor().times(3).execute(OkHttpClient::newCall, client, activity.createRequestForProfile())
+            val kbResponse = TimesExecutor().times(2).execute(OkHttpClient::newCall, client, activity.createRequestForProfile())
             if (kbResponse.successful) {
                 profile = JSONObject(kbResponse.result).toProfile()
             }
