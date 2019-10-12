@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import com.allyants.boardview.SimpleBoardAdapter
@@ -32,54 +33,75 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
         column_position: Int, item_position: Int): View {
 
         val itemView = View.inflate(context, R.layout.board_column_item_layout , null as ViewGroup?)
+        itemView.apply {
+           val task = (this@KBoardAdapter.columns[column_position] as Column).objects[item_position] as Task
+            val cardView = itemView.findViewById<MaterialCardView>(R.id.board_item_card)
 
-        val task = (this.columns[column_position] as Column).objects[item_position] as Task
-        val cardView = itemView.findViewById<MaterialCardView>(R.id.board_item_card)
+            findViewById<TextView>(R.id.task_title).text = task.title
+            findViewById<TextView>(R.id.task_id).text = task.id
+            findViewById<TextView>(R.id.name_owner).text = task.assignee_name
+            findViewById<TextView>(R.id.creation_days).text = Date().timePassedSince(task.date_creation!!) + "d"
+            findViewById<TextView>(R.id.priority).text = "P" + task.priority
 
-        itemView.findViewById<TextView>(R.id.task_title).text = task.title
-        itemView.findViewById<TextView>(R.id.task_id).text = task.id
-        itemView.findViewById<TextView>(R.id.name_owner).text = task.assignee_name
-        itemView.findViewById<TextView>(R.id.creation_days).text = Date().timePassedSince(task.date_creation!!) + "d"
-        itemView.findViewById<TextView>(R.id.priority).text = "P" + task.priority
+            val ownerIcon = findViewById<ImageView>(R.id.owner_icon)
+            val textOwnerIcon = findViewById<TextView>(R.id.icon_owner_text)
+            if(!task.assignee_name.isNullOrEmpty()) {
+                var colorIconOwner = 0
+                colorsOwner.forEach {
+                    if (it.first == task.assignee_name) {
+                        colorIconOwner = it.second
+                    }
+                }
 
-        val ownerIcon = itemView.findViewById<ImageView>(R.id.owner_icon)
-        val textOwnerIcon = itemView.findViewById<TextView>(R.id.icon_owner_text)
-        if(!task.assignee_name.isNullOrEmpty()) {
-            var colorIconOwner = 0
-            colorsOwner.forEach {
-                if (it.first == task.assignee_name) {
-                    colorIconOwner = it.second
+                if (colorIconOwner == 0) {
+                    val colors = resources.obtainTypedArray(R.array.mdcolor)
+                    colorIconOwner = TaskColor.getRandomMaterialColor(colors)
+                    colorsOwner.add(task.assignee_name!! to colorIconOwner)
+                }
+
+
+                ownerIcon.setImageResource(R.drawable.circle_bg)
+                ownerIcon.setColorFilter(colorIconOwner)
+
+
+                textOwnerIcon.text = task.assignee_name?.generateInitials()
+                textOwnerIcon.bringToFront()
+            } else {
+                ownerIcon.visibility = View.GONE
+                textOwnerIcon.visibility = View.GONE
+            }
+
+            cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
+            cardView.strokeWidth = 4
+            cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
+            cardView.setOnClickListener {
+                val context = cardView.context
+                if (context is BoardActivity) {
+                    context.openDetailTask(task.toBundle())
                 }
             }
 
-            if (colorIconOwner == 0) {
-                val colors = itemView.resources.obtainTypedArray(R.array.mdcolor)
-                colorIconOwner = TaskColor.getRandomMaterialColor(colors)
-                colorsOwner.add(task.assignee_name!! to colorIconOwner)
-            }
-
-
-            ownerIcon.setImageResource(R.drawable.circle_bg)
-            ownerIcon.setColorFilter(colorIconOwner)
-
-
-            textOwnerIcon.text = task.assignee_name?.generateInitials()
-            textOwnerIcon.bringToFront()
-        } else {
-            ownerIcon.visibility = View.GONE
-            textOwnerIcon.visibility = View.GONE
-        }
-
-        cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
-        cardView.strokeWidth = 4
-        cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
-        cardView.setOnClickListener {
-            val context = cardView.context
-            if (context is BoardActivity) {
-                context.openDetailTask(task.toBundle())
+            val buttonOptions = findViewById<MaterialButton>(R.id.opt_button)
+            buttonOptions.setOnClickListener {
+                openOptions(this, task, it)
             }
         }
         return itemView
+    }
+
+    private fun openOptions(taskItemView: View, task: Task, view: View) {
+        val context = taskItemView.context
+        val popupMenu = PopupMenu(context, view)
+        popupMenu.inflate(R.menu.task_menu_options_layout)
+        popupMenu.setOnMenuItemClickListener {
+            when(it.itemId){
+//                R.id.task_opt_edit -> this.openTaskForEdition(context, task)
+//                R.id.task_opt_finalize -> this.finalizeTaskOption(context, task)
+            }
+            true
+        }
+        popupMenu.show()
+        true
     }
 
     override fun createHeaderView(context: Context?, header_object: Any?, column_position: Int): View {

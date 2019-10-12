@@ -58,13 +58,14 @@
                     <com.google.android.material.button.MaterialButton
                             android:id="@+id/finalize_button"
                             style="@style/Widget.AppTheme.Button.IconButton"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_gravity="center"
                             android:layout_marginEnd="4dp"
-                            app:icon="@drawable/icon_menu_opt"
+                            app:icon="@drawable/icon_board_task"
                             app:iconGravity="textStart"
                             app:iconSize="14dp"
+                            app:iconTint="@color/mdtp_ampm_text_color"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
