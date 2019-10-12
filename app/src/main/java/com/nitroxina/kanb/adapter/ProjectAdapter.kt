@@ -119,8 +119,8 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
                     findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
                 }
                 val projectCard = findViewById<MaterialCardView>(R.id.project_card)
-                projectCard.strokeColor = Color.GRAY
-                projectCard.strokeWidth = 3
+                projectCard.strokeColor = 0xFFF59362.toInt() //Color.GRAY
+                projectCard.strokeWidth = 2
                 projectCard.setOnClickListener {
                     val context = holder.projectItemView.context
                     val intent = Intent(context, BoardActivity::class.java)

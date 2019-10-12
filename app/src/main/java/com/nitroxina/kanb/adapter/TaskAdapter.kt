@@ -26,12 +26,15 @@ import com.google.android.material.textview.MaterialTextView
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.MainActivity
 import com.nitroxina.kanb.R
+import com.nitroxina.kanb.extensions.generateInitials
+import com.nitroxina.kanb.extensions.timePassedSince
 import com.nitroxina.kanb.kanboardApi.CLOSE_TASK
 import com.nitroxina.kanb.kanboardApi.UPDATE_TASK
 import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.online.KBResponse
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
+import kotlinx.android.synthetic.main.task_list_item_layout.view.*
 import org.joda.time.Days
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -39,6 +42,10 @@ import java.time.LocalDateTime
 import java.util.*
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private var colorIconOwner: Int = 0
+    private var ownerName: String = if (profile.name.isNullOrEmpty()) { profile.username } else { profile.name }
+    private var initialsOwner: String = ownerName.generateInitials()
+
     init {
         loadList()
     }
@@ -59,7 +66,6 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 for(i in 1..jsonList.length()){
                     val jsonObject = jsonList[i-1] as JSONObject
                     val task = jsonObject.toTask()
-                    loadTaskUsers(task)
                     list.add(task)
                 }
             }
@@ -70,24 +76,22 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
         }.execute()
     }
 
-    private fun loadTaskUsers(task: Task) {
-
-    }
-
     override fun getItemCount(): Int = this.list.size
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         if(this.list.isNotEmpty()){
             (holder.taskItemView as ViewGroup).apply {
                 val task = this@TaskAdapter.list[position]
-                findViewById<TextView>(com.nitroxina.kanb.R.id.task_title).text = task.title
-                findViewById<TextView>(com.nitroxina.kanb.R.id.task_id).text = "#${task.id}"
-                val colorLine : View = findViewById<View>(com.nitroxina.kanb.R.id.line_color)
+                findViewById<TextView>(R.id.task_title).text = task.title
+                findViewById<TextView>(R.id.task_id).text = "#${task.id}"
+                val colorLine : View = findViewById<View>(R.id.line_color)
                 colorLine.setBackgroundColor(Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!)))
 
-                val card = findViewById<MaterialCardView>(com.nitroxina.kanb.R.id.task_card)
+                val card = findViewById<MaterialCardView>(R.id.task_card)
                 @TargetApi(21)
                 card.elevation = 4.0f
+                card.strokeColor = 0xFFF59362.toInt()
+                card.strokeWidth = 2
                 card.setOnClickListener {
                     val context = card.context
                     if (context is MainActivity) {
@@ -95,26 +99,43 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                     }
                 }
 
-                val buttonOptions = findViewById<MaterialButton>(com.nitroxina.kanb.R.id.finalize_button)
+                val buttonOptions = findViewById<MaterialButton>(R.id.finalize_button)
                 buttonOptions.setOnClickListener {
                     openOptions(holder.taskItemView, task, it)
                 }
 
-                val formatter =  SimpleDateFormat("dd/MM/yyyy HH:mm")
-                val dateCreation = formatter.parse(task.date_creation)
-                val dateNow = Date()
-                val days = ((dateNow.time - dateCreation.time)/(1000*60*60*24))
+                val days = Date().timePassedSince(task.date_creation!!)
 
-                findViewById<TextView>(com.nitroxina.kanb.R.id.task_days).text = days.toString() +"d"
+                findViewById<TextView>(R.id.task_days).text = days.toString() +"d"
+                findViewById<TextView>(R.id.task_priority_vl).text = "P${task.priority}"
 
-                val ownerIcon = findViewById<ImageView>(com.nitroxina.kanb.R.id.icon_owner)
-                ownerIcon.setImageResource(com.nitroxina.kanb.R.drawable.circle_bg)
-                val textOwnerIcon = findViewById<TextView>(com.nitroxina.kanb.R.id.icon_text)
-                textOwnerIcon.text = profile.username!!.substring(0..1).toUpperCase()
+                if(colorIconOwner == 0) {
+                    val colors = resources.obtainTypedArray(R.array.mdcolor)
+                    colorIconOwner = TaskColor.getRandomMaterialColor(colors)
+                }
+                val ownerIcon = findViewById<ImageView>(R.id.icon_owner)
+                ownerIcon.setImageResource(R.drawable.circle_bg)
+                ownerIcon.setColorFilter(colorIconOwner)
+
+                val textOwnerIcon = findViewById<TextView>(R.id.icon_text)
+                textOwnerIcon.text = initialsOwner
                 textOwnerIcon.bringToFront()
-                findViewById<MaterialTextView>(com.nitroxina.kanb.R.id.owner_name).text = profile.username
+                findViewById<MaterialTextView>(R.id.owner_name).text = ownerName
+
+                findViewById<TextView>(R.id.breadcrumb).text = task.project_name + ">" + task.swimlane_name + ">" + task.column_name
             }
         }
+    }
+
+    private fun generateInitials() : String {
+        var initials = ""
+        val parts = ownerName.split(" ")
+        initials = if(parts.size >= 2) {
+             parts[0].substring(0..0).toUpperCase() + parts[1].substring(0..0).toUpperCase()
+        } else {
+            ownerName.substring(0..1).toUpperCase()
+        }
+        return initials
     }
 
     private fun openTaskForEdition(context: Context, task: Task) {

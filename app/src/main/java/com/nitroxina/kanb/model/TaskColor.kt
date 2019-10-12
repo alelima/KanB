@@ -1,5 +1,8 @@
 package com.nitroxina.kanb.model
 
+import android.content.res.TypedArray
+import android.graphics.Color
+
 data class TaskColor(
     val background: String,
     val border: String,
@@ -50,6 +53,13 @@ data class TaskColor(
 
         fun hexaBorderColorOf(nameColor: String) : String? {
             return colorBorderMap[nameColor]
+        }
+
+        fun getRandomMaterialColor(colors: TypedArray): Int {
+            val index = (Math.random() * colors.length()).toInt()
+            val returnColor = colors.getColor(index, Color.GRAY)
+            colors.recycle()
+            return returnColor
         }
     }
 }

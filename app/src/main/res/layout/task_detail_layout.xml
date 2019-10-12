@@ -51,7 +51,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/task_priority"
+                    android:id="@+id/task_priority_vl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -74,7 +74,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/task_priority" />
+                    app:layout_constraintTop_toBottomOf="@+id/task_priority_vl" />
 
             <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/task_date_started"
@@ -123,7 +123,7 @@
                     android:layout_marginTop="12dp"
                     android:fontFamily="@font/roboto"
                     android:textSize="12sp"
-                    app:layout_constraintStart_toEndOf="@+id/task_priority"
+                    app:layout_constraintStart_toEndOf="@+id/task_priority_vl"
                     app:layout_constraintTop_toBottomOf="@+id/task_status" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -135,7 +135,7 @@
                     android:fontFamily="@font/roboto"
                     android:textSize="12sp"
                     app:layout_constraintStart_toEndOf="@+id/task_swimlane"
-                    app:layout_constraintTop_toBottomOf="@+id/task_priority" />
+                    app:layout_constraintTop_toBottomOf="@+id/task_priority_vl" />
 
             <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/task_date_started_value"
@@ -316,7 +316,6 @@
             android:id="@+id/task_detail_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/roboto"
@@ -331,7 +330,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/task_detail_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>

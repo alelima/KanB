@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import com.allyants.boardview.SimpleBoardAdapter
@@ -12,17 +13,20 @@ import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.EditTaskDialogFragment
 import com.nitroxina.kanb.R
+import com.nitroxina.kanb.extensions.generateInitials
+import com.nitroxina.kanb.extensions.timePassedSince
 import com.nitroxina.kanb.kanboardApi.KBProjectRole
 import com.nitroxina.kanb.model.Project
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
-import java.util.ArrayList
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val projectRole: KBProjectRole?, private val project: Project) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
 
-    val columnsTaskCount = arrayListOf<Pair<TextView, String?>>()
+    private val columnsTaskCount = arrayListOf<Pair<TextView, String?>>()
+    private val colorsOwner  = arrayListOf<Pair<String, Int>>()
 
     override fun createItemView(context: Context, header_object: Any, item_object: Any,
         column_position: Int, item_position: Int): View {
@@ -34,6 +38,38 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
 
         itemView.findViewById<TextView>(R.id.task_title).text = task.title
         itemView.findViewById<TextView>(R.id.task_id).text = task.id
+        itemView.findViewById<TextView>(R.id.name_owner).text = task.assignee_name
+        itemView.findViewById<TextView>(R.id.creation_days).text = Date().timePassedSince(task.date_creation!!) + "d"
+        itemView.findViewById<TextView>(R.id.priority).text = "P" + task.priority
+
+        val ownerIcon = itemView.findViewById<ImageView>(R.id.owner_icon)
+        val textOwnerIcon = itemView.findViewById<TextView>(R.id.icon_owner_text)
+        if(!task.assignee_name.isNullOrEmpty()) {
+            var colorIconOwner = 0
+            colorsOwner.forEach {
+                if (it.first == task.assignee_name) {
+                    colorIconOwner = it.second
+                }
+            }
+
+            if (colorIconOwner == 0) {
+                val colors = itemView.resources.obtainTypedArray(R.array.mdcolor)
+                colorIconOwner = TaskColor.getRandomMaterialColor(colors)
+                colorsOwner.add(task.assignee_name!! to colorIconOwner)
+            }
+
+
+            ownerIcon.setImageResource(R.drawable.circle_bg)
+            ownerIcon.setColorFilter(colorIconOwner)
+
+
+            textOwnerIcon.text = task.assignee_name?.generateInitials()
+            textOwnerIcon.bringToFront()
+        } else {
+            ownerIcon.visibility = View.GONE
+            textOwnerIcon.visibility = View.GONE
+        }
+
         cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
         cardView.strokeWidth = 4
         cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))

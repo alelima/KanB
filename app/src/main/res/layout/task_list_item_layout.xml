@@ -24,8 +24,6 @@
                             android:id="@+id/line_color"
                             android:layout_width="6dp"
                             android:layout_height="0dp"
-                            android:layout_marginStart="1dp"
-                            android:background="@android:color/black"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -41,10 +39,8 @@
                             android:fontFamily="@font/roboto"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                             android:id="@+id/task_title"
@@ -92,42 +88,56 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="22dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="4dp"
                             android:contentDescription="@string/icon_owner"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/task_id" />
+                            app:layout_constraintTop_toBottomOf="@+id/breadcrumb" />
 
-                        <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/owner_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="25dp"
-                        android:fontFamily="@font/roboto"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@+id/icon_owner"
-                        app:layout_constraintTop_toBottomOf="@+id/task_title" />
+                    <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/owner_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/roboto"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toEndOf="@+id/icon_owner"
+                            app:layout_constraintTop_toBottomOf="@+id/breadcrumb" />
 
                     <TextView
                             android:id="@+id/task_days"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginEnd="10dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/finalize_button" />
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="4dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/task_priority_vl" />
 
-                    <!--                        <us.feras.mdv.MarkdownView-->
-<!--                                android:id="@+id/markdownView"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="match_parent"-->
-<!--                                android:layout_marginStart="8dp"-->
-<!--                                android:layout_marginEnd="8dp"-->
-<!--                                android:background="#00C22020"-->
-<!--                                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                                app:layout_constraintStart_toStartOf="parent"-->
-<!--                                app:layout_constraintTop_toBottomOf="@+id/icon_owner" />-->
+                    <TextView
+                            android:id="@+id/task_priority_vl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="4dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    <TextView
+                            android:id="@+id/breadcrumb"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="@font/roboto"
+                            android:textColor="@android:color/darker_gray"
+                            app:layout_constraintEnd_toStartOf="@+id/finalize_button"
+                            app:layout_constraintStart_toStartOf="@+id/line_color"
+                            app:layout_constraintTop_toBottomOf="@+id/task_id" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

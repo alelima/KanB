@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:boardview="http://schemas.android.com/apk/res-auto/com.allyants.boardview"
+        xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/activity_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <com.allyants.boardview.BoardView
-            xmlns:boardview="http://schemas.android.com/apk/res-auto/com.allyants.boardview"
-            boardview:boardItemBackground="@color/colorPrimary"
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/boardView" />
+            android:layout_height="match_parent">
+
+        <com.allyants.boardview.BoardView
+                android:id="@+id/boardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                boardview:boardItemBackground="@color/colorPrimary" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </RelativeLayout>
