@@ -20,6 +20,7 @@ import org.json.JSONObject
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
@@ -90,7 +91,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                 val card = findViewById<MaterialCardView>(R.id.task_card)
                 @TargetApi(21)
                 card.elevation = 4.0f
-                card.strokeColor = 0xFFF59362.toInt()
+                card.strokeColor = ContextCompat.getColor(this.context, R.color.colorPrimary)
                 card.strokeWidth = 2
                 card.setOnClickListener {
                     val context = card.context

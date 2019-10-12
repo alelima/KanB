@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import com.nitroxina.kanb.BoardActivity
 import com.nitroxina.kanb.R
@@ -119,7 +120,7 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
                     findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
                 }
                 val projectCard = findViewById<MaterialCardView>(R.id.project_card)
-                projectCard.strokeColor = 0xFFF59362.toInt() //Color.GRAY
+                projectCard.strokeColor = ContextCompat.getColor(this.context, R.color.colorPrimary)
                 projectCard.strokeWidth = 2
                 projectCard.setOnClickListener {
                     val context = holder.projectItemView.context
