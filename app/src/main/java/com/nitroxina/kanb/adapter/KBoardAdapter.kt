@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProviders
 import com.allyants.boardview.SimpleBoardAdapter
 import com.google.android.material.button.MaterialButton
@@ -24,7 +25,7 @@ import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import java.util.*
 
 @Suppress("UNCHECKED_CAST")
-class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val projectRole: KBProjectRole?, private val project: Project) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
+class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val project: Project, var reloadFunction: ()-> Unit) : SimpleBoardAdapter(context, data as ArrayList<SimpleColumn>) {
 
     private val columnsTaskCount = arrayListOf<Pair<TextView, String?>>()
     private val colorsOwner  = arrayListOf<Pair<String, Int>>()
@@ -74,12 +75,6 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
             cardView.strokeColor = Color.parseColor(TaskColor.hexaBorderColorOf(task.color_id!!))
             cardView.strokeWidth = 4
             cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
-            cardView.setOnClickListener {
-                val context = cardView.context
-                if (context is BoardActivity) {
-                    context.openDetailTask(task.toBundle())
-                }
-            }
 
             val buttonOptions = findViewById<MaterialButton>(R.id.opt_button)
             buttonOptions.setOnClickListener {
@@ -95,8 +90,8 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
         popupMenu.inflate(R.menu.task_menu_options_layout)
         popupMenu.setOnMenuItemClickListener {
             when(it.itemId){
-//                R.id.task_opt_edit -> this.openTaskForEdition(context, task)
-//                R.id.task_opt_finalize -> this.finalizeTaskOption(context, task)
+                R.id.task_opt_edit -> this.openTaskForEdition(context, task)
+                R.id.task_opt_finalize -> this.finalizeTaskOption(context, task)
             }
             true
         }
@@ -125,14 +120,14 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
     }
 
     override fun isColumnLocked(column_position: Int): Boolean {
-        if(projectRole == KBProjectRole.MANAGER) {
+        if(project.projectRole == KBProjectRole.MANAGER) {
             return false
         }
         return true
     }
 
     override fun isItemLocked(column_position: Int): Boolean {
-        if(projectRole == KBProjectRole.VIEWER) {
+        if(project.projectRole == KBProjectRole.VIEWER) {
             return true
         }
         return false
@@ -154,7 +149,7 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
             task.project_name = project.name
             val taskViewModel = ViewModelProviders.of(context).get(EditTaskViewModel::class.java)
             taskViewModel.dataTask.value = task
-            EditTaskDialogFragment().show(context.supportFragmentManager, "edit_dialog")
+            EditTaskDialogFragment(reloadFunction).show(context.supportFragmentManager, "edit_dialog")
         }
     }
 
@@ -175,4 +170,31 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
             this.objects = items
         }
     }
+
+    private fun openTaskForEdition(context: Context, task: Task) {
+        if (context is BoardActivity) {
+            val taskViewModel = ViewModelProviders.of(context).get(EditTaskViewModel::class.java)
+            taskViewModel.dataTask.value = task
+            EditTaskDialogFragment(reloadFunction).show(context.supportFragmentManager, "edit_dialog")
+        }
+    }
+
+    private fun finalizeTaskOption(context: Context, task: Task) {
+        AlertDialog.Builder(context)
+            .setMessage(context.getString(R.string.task_message_finalize))
+            .setNeutralButton("Ok") { dialog, _ ->
+                finalizeTask(context, task)
+                dialog.dismiss()
+            }
+            .setNegativeButton("cancelar") {dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+    private fun finalizeTask(context: Context, task: Task) {
+        TaskAdapter.FinalizeTaskAsyncTask(context, task, reloadFunction).execute()
+    }
+
 }

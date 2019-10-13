@@ -21,13 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     private val fragments = mapOf(PROJECT_LIST_FRAGMENT to ::ProjectListFragment,
         TASK_LIST_FRAGMENT to ::TasksListFragment, PROFILE_FRAGMENT to ::ProfileFragment,
-        EDIT_TASK_FORM_FRAGMENT to ::EditTaskDialogFragment, TASK_DETAIL_FRAGMENT to ::TaskDetailFragment)
+        TASK_DETAIL_FRAGMENT to ::TaskDetailFragment)
 
     companion object {
         val PROJECT_LIST_FRAGMENT = "projectListFragment"
         val TASK_LIST_FRAGMENT = "taskListFragment"
         val PROFILE_FRAGMENT = "profileFragment"
-        val EDIT_TASK_FORM_FRAGMENT = "editTaskFormFragment"
         val TASK_DETAIL_FRAGMENT = "detailTaskFragment"
     }
 

@@ -34,8 +34,6 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
         //loadList()
     }
 
-    //private var list: MutableList<Project> = mutableListOf()
-
     fun loadList() {
         loadList { }
     }
@@ -63,19 +61,6 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
 
                 }
 
-
-//                var keysList = jsonObject.keys()
-//                this@ProjectAdapter.list = mutableListOf<Project>()
-//                keysList.forEach {
-//                    val id = it
-//                    val userId = this@ProjectAdapter.profile.id
-//                    val projectRole = loadRole(id, userId)
-//                    val name = jsonObject.getString(id)
-//                    val project = Project(id, name)
-//                    project.projectRole = projectRole
-//                    project.board = loadBoard(id)
-//                    list.add(project)
-//                }
             }
             override fun onPostExecute(result: Unit?) {
                 this@ProjectAdapter.notifyDataSetChanged()
@@ -117,7 +102,7 @@ class ProjectAdapter(val profile: Profile, val list: MutableList<Project>) :  Re
                 }
 
                 if(project.board != null) {
-                    findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume()
+                    findViewById<TextView>(R.id.columns_task_information).text = project.board!!.boardResume(true)
                 }
                 val projectCard = findViewById<MaterialCardView>(R.id.project_card)
                 projectCard.strokeColor = ContextCompat.getColor(this.context, R.color.colorPrimary)

@@ -20,24 +20,37 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.nitroxina.kanb.extensions.toBoard
 import com.nitroxina.kanb.kanboardApi.MOVE_TASK_POSITION
+import com.nitroxina.kanb.model.Board
 import com.nitroxina.kanb.online.KBResponse
 
 
 class BoardActivity : AppCompatActivity() {
     private var list = ArrayList<Item>()
     private lateinit var project : Project
+    var actualFragment: String? = null
+
+    private val fragments = mapOf(BOARD_FRAGMENT to ::BoardFragment
+        , TASK_DETAIL_FRAGMENT to ::TaskDetailFragment)
+
+    companion object {
+        const val BOARD_FRAGMENT = "boardFragment"
+        const val TASK_DETAIL_FRAGMENT = "detailTaskFragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
         project = intent.getSerializableExtra("project") as Project
         supportActionBar?.title = project.name
-        createBoard()
+        if(savedInstanceState == null) {
+            navigateTo(BOARD_FRAGMENT, getProjectBundle())
+        }
     }
 
-    fun openDetailTask(bundle: Bundle? = null) {
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        val fragmentInstance: Fragment = ::TaskDetailFragment.invoke()!!
+    fun navigateTo(item: String, bundle: Bundle? = null) {
+
+        supportFragmentManager.popBackStack(actualFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val fragmentInstance: Fragment = fragments[item]?.invoke()!!
         bundle?.let { fragmentInstance.arguments = it }
         supportFragmentManager
             .beginTransaction()
@@ -46,83 +59,31 @@ class BoardActivity : AppCompatActivity() {
                 android.R.anim.slide_out_right)
             .replace(R.id.fragment_container, fragmentInstance)
             .addToBackStack(null)
-            .commit()
+            .commitAllowingStateLoss()
+        actualFragment = item
     }
 
-    fun createBoard() {
-        val boardView = findViewById<View>(R.id.boardView) as BoardView
-        boardView.SetColumnSnap(true)
-        val data = ArrayList<KBoardAdapter.KBColumn>()
+    fun reloadBoard(board: Board) {
+        this.project.board = board
+        this.actualFragment = null
+        val fragmentInstance: Fragment = fragments[BOARD_FRAGMENT]?.invoke()!!
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container,
+                fragmentInstance)
+            .commitAllowingStateLoss()
+    }
 
-        //depois ver como fazer um board por swimlane
-        project.board!!.swimlanes[0].columns.forEach {
-                val list = mutableListOf<Task>()
-                it.tasks.forEach {
-                    list.add(it)
-                }
-                data.add(KBoardAdapter.KBColumn(it, list as ArrayList<Any>))
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount == 1) {
+            finish()
+        } else {
+            super.onBackPressed()
         }
-        val boardAdapter = KBoardAdapter(this, data, project.projectRole, Project(project.id, project.name))
-        boardView.setAdapter(boardAdapter)
-        boardView.setOnDoneListener { Log.e("scroll", "done") }
-        boardView.setOnDragItemListener(object : BoardView.DragItemStartCallback {
-            override fun startDrag(view: View, startItemPos: Int, startColumnPos: Int) {
-                //
-            }
-
-            override fun changedPosition(view: View, startItemPos: Int, startColumnPos: Int,
-                newItemPos: Int, newColumnPos: Int) {
-                //
-            }
-
-            override fun dragging(itemView: View, event: MotionEvent) {
-                //
-            }
-
-            override fun endDrag(view: View, startItemPos: Int, startColumnPos: Int,
-                endItemPos: Int, endColumnPos: Int) {
-                if(startItemPos != endItemPos || startColumnPos != endColumnPos) {
-                    val id = view.findViewById<TextView>(R.id.task_id).text.toString()
-                    val task = Task("", project.id!!, id)
-                    task.position = (endItemPos + 1).toString()
-                    task.column_id = (endColumnPos + 1).toString()
-                    task.swimlane_id = project.board!!.swimlanes[0].id
-                    updateTaskPosition(task)
-                    (boardView.boardAdapter as KBoardAdapter).updateColumnHeadCount(startColumnPos, endColumnPos)
-                }
-            }
-        })
     }
 
-    fun updateTaskPosition(task: Task) {
-        object: AsyncTask<Void, Void, KBResponse?>(){
-            override fun doInBackground(vararg params: Void?) : KBResponse? {
-                val parameters = task.toJsonMovePositionParameters()
-                return KBClient.execute(MOVE_TASK_POSITION, parameters)
-            }
-
-            override fun onPostExecute(result: KBResponse?) {
-                super.onPostExecute(result)
-                if(!result?.successful!!) {
-                    //volta o quadro para o estado anterior (como?)
-                }
-            }
-        }.execute()
-    }
-
-    fun loadBoard() {
-        object: AsyncTask<Void, Void, Unit>(){
-            override fun doInBackground(vararg params: Void?) {
-                val parameters = "[ ${project.id} ]"
-                val kbResponse = KBClient.execute(GET_BOARD, parameters)
-                val jsonArray = JSONArray(kbResponse.result)
-                this@BoardActivity.project.board = jsonArray.toBoard()
-            }
-
-            override fun onPostExecute(result: Unit?) {
-                super.onPostExecute(result)
-                createBoard()
-            }
-        }.execute()
+    private fun getProjectBundle(): Bundle? {
+        val bundle = Bundle()
+        bundle.putSerializable("project", project)
+        return bundle
     }
 }

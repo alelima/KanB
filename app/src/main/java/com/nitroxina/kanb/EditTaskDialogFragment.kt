@@ -25,6 +25,7 @@ import com.nitroxina.kanb.model.Category
 import com.nitroxina.kanb.model.Task
 import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.online.KBClient
+import com.nitroxina.kanb.online.KBResponse
 import com.nitroxina.kanb.viewcomponents.DateHourMask
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
@@ -32,7 +33,7 @@ import dev.sasikanth.colorsheet.ColorSheet
 import org.json.JSONArray
 import org.json.JSONObject
 
-class EditTaskDialogFragment : DialogFragment() {
+class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFragment() {
 
     private lateinit var task: Task
     private lateinit var categoryList: MutableList<Category>
@@ -187,34 +188,46 @@ class EditTaskDialogFragment : DialogFragment() {
     }
 
     private fun createTask() {
-        object: AsyncTask<Void, Void, Unit>(){
-            override fun doInBackground(vararg params: Void?) {
+        object: AsyncTask<Void, Void, KBResponse>(){
+            override fun doInBackground(vararg params: Void?) : KBResponse {
                 val parameters = this@EditTaskDialogFragment.task?.toJsonCreateParameters()
                 val kbResponse = KBClient.execute(CREATE_TASK, parameters)
                 if(kbResponse.successful) {
                     this@EditTaskDialogFragment.task?.id = kbResponse.result
                 }
+                return kbResponse
             }
 
-            override fun onPostExecute(result: Unit?) {
+            override fun onPostExecute(result: KBResponse) {
                 super.onPostExecute(result)
-                val activity = this@EditTaskDialogFragment.activity
-                if( activity is BoardActivity) {
-                    activity.loadBoard()
+                if(result.successful) {
+                    if(this@EditTaskDialogFragment.reloadFunction != null) {
+                        this@EditTaskDialogFragment.reloadFunction!!()
+                    }
                 }
             }
         }.execute()
     }
 
     private fun updateTask() {
-        object: AsyncTask<Void, Void, Unit>(){
-            override fun doInBackground(vararg params: Void?) {
+        object: AsyncTask<Void, Void, KBResponse>(){
+            override fun doInBackground(vararg params: Void?) : KBResponse{
                 val parameters = this@EditTaskDialogFragment.task?.toJsonUpdateParameters()
                 val kbResponse = KBClient.execute(UPDATE_TASK, parameters)
                 if(kbResponse.successful) {
                     if(kbResponse.result?.toBoolean() == false) {
                         // TODO: Tratar problema aqui
                         println("Deu problema")
+                    }
+                }
+                return kbResponse
+            }
+
+            override fun onPostExecute(result: KBResponse) {
+                super.onPostExecute(result)
+                if(result.successful) {
+                    if(this@EditTaskDialogFragment.reloadFunction != null) {
+                        this@EditTaskDialogFragment.reloadFunction!!()
                     }
                 }
             }

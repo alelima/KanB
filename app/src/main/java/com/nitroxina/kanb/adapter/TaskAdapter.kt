@@ -35,11 +35,7 @@ import com.nitroxina.kanb.model.Profile
 import com.nitroxina.kanb.model.TaskColor
 import com.nitroxina.kanb.online.KBResponse
 import com.nitroxina.kanb.viewmodel.EditTaskViewModel
-import kotlinx.android.synthetic.main.task_list_item_layout.view.*
-import org.joda.time.Days
 import java.lang.ref.WeakReference
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
@@ -189,7 +185,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
 
     class TaskViewHolder(val taskItemView: View) : RecyclerView.ViewHolder(taskItemView)
 
-    private class FinalizeTaskAsyncTask internal constructor(context: Context, val task: Task) : AsyncTask<Void, Void, KBResponse>() {
+    class FinalizeTaskAsyncTask internal constructor(context: Context, val task: Task, var reloadFunction:(()-> Unit)? = null) : AsyncTask<Void, Void, KBResponse>() {
         private val activityReference: WeakReference<Context> = WeakReference(context)
 
         override fun doInBackground(vararg params: Void?): KBResponse {
@@ -209,6 +205,10 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
                     .create()
                     .show()
                 return
+            } else {
+                if(reloadFunction != null) {
+                    reloadFunction!!()
+                }
             }
         }
     }

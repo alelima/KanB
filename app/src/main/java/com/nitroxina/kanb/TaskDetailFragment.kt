@@ -74,7 +74,9 @@ class TaskDetailFragment : Fragment(){
 
     // TO navigation works
     override fun onResume() {
-        (activity!! as MainActivity).actualFragment = MainActivity.TASK_DETAIL_FRAGMENT
+        if(activity!! is MainActivity) {
+            (activity!! as MainActivity).actualFragment = MainActivity.TASK_DETAIL_FRAGMENT
+        }
         super.onResume()
     }
 
