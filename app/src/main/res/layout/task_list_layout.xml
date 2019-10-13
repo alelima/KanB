@@ -4,10 +4,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/task_list"
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/task_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="213dp"
+                android:layout_height="26dp"
+                android:visibility="gone"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:indeterminate="true"
+                android:layout_gravity="center"/>
+    </FrameLayout>
 
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

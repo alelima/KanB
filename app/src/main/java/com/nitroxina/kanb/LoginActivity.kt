@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,10 +28,13 @@ import javax.net.ssl.SSLHandshakeException
 
 class LoginActivity : AppCompatActivity() {
 
+    lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         val buttonSave = findViewById<MaterialButton>(R.id.save_button)
+        progressBar = findViewById<ProgressBar>(R.id.progressBar)
         buttonSave.setOnClickListener {
             createTestAndSaveCredential()
         }
@@ -102,9 +107,14 @@ class LoginActivity : AppCompatActivity() {
         return serverURL
     }
 
-    private class ProfileConfigurationAsyncTask internal constructor(context: LoginActivity, val client: OkHttpClient) : AsyncTask<Void, Void, KBResponse>() {
+    private inner class ProfileConfigurationAsyncTask internal constructor(context: LoginActivity, val client: OkHttpClient) : AsyncTask<Void, Void, KBResponse>() {
         private val activityReference: WeakReference<LoginActivity> = WeakReference(context)
         private lateinit var profile: Profile
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            progressBar.visibility = View.VISIBLE
+        }
 
         override fun doInBackground(vararg params: Void?): KBResponse {
             val activity = activityReference.get()!!
@@ -129,6 +139,8 @@ class LoginActivity : AppCompatActivity() {
                 activity.startActivity(intent)
                 return
             }
+
+            progressBar.visibility = View.GONE
 
             if (response.conectionError?.exception is SSLHandshakeException) {
                 AlertDialog.Builder(activity)

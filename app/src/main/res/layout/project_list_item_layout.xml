@@ -21,6 +21,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/otp_project_button"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="4dp"
+                    app:icon="@drawable/icon_board_task"
+                    app:iconGravity="textStart"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/mdtp_ampm_text_color"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                     android:id="@+id/project_id"
                     android:layout_width="wrap_content"

@@ -19,6 +19,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -38,7 +39,7 @@ import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 import java.lang.ref.WeakReference
 import java.util.*
 
-class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(val profile: Profile, var progressBar: ProgressBar) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     private var colorIconOwner: Int = 0
     private var ownerName: String = if (profile.name.isNullOrEmpty()) { profile.username } else { profile.name }
     private var initialsOwner: String = ownerName.generateInitials()
@@ -56,6 +57,11 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
     fun loadList(callback: ()->Unit) {
 
         object: AsyncTask<Void, Void, Unit>(){
+            override fun onPreExecute() {
+                super.onPreExecute()
+                progressBar.visibility = View.VISIBLE
+            }
+
             override fun doInBackground(vararg params: Void?) {
                 val kbResponse = KBClient.execute(GET_MY_DASHBOARD)
                 this@TaskAdapter.list = mutableListOf<Task>()
@@ -68,6 +74,7 @@ class TaskAdapter(val profile: Profile) : RecyclerView.Adapter<TaskAdapter.TaskV
             }
             override fun onPostExecute(result: Unit?) {
                 this@TaskAdapter.notifyDataSetChanged()
+                progressBar.visibility = View.GONE
                 callback()
             }
         }.execute()

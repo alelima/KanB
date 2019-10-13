@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nitroxina.kanb.MainActivity.Companion.TASK_LIST_FRAGMENT
@@ -18,11 +19,13 @@ import com.nitroxina.kanb.viewmodel.EditTaskViewModel
 class TasksListFragment : Fragment() {
 
     private lateinit var profile: Profile
+    lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.task_list_layout, null)
         profile = arguments?.get("profile") as Profile
+        progressBar = rootView.findViewById<ProgressBar>(R.id.progressBar)
         val taskAdapter = configureList(rootView)
         configureRefresh(rootView, taskAdapter)
         configureListObserver()
@@ -41,7 +44,7 @@ class TasksListFragment : Fragment() {
 
     private fun configureList(rootView: View): TaskAdapter {
         val viewManager = LinearLayoutManager(activity!!)
-        val viewAdapter = TaskAdapter(profile)
+        val viewAdapter = TaskAdapter(profile, progressBar)
         val listView = rootView.findViewById<RecyclerView>(R.id.task_list)
         listView.layoutManager = viewManager
         listView.adapter = viewAdapter
