@@ -31,7 +31,7 @@ class BoardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
         project = intent.getSerializableExtra("project") as Project
-        //supportActionBar?.title = project.name
+        supportActionBar?.title = project.name
         createBoard()
     }
 
