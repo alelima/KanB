@@ -50,13 +50,10 @@ object KBClient {
         }
         val jsonString = "{\"jsonrpc\" : \"2.0\", \"method\": \"$nameMethod\", \"id\": 2 ${paramStr}"
         val body = RequestBody.create(JSON, jsonString)
-
         val request = Request.Builder()
             .url(serverUrl)
             .post(body)
             .build()
-
-
         val response = okHttpClient.newCall(request).execute()
         var jsonObj = JSONObject(response.body()!!.string())
         return jsonObj.getKBResponse()
