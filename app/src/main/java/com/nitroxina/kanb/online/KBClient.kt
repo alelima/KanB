@@ -48,7 +48,7 @@ object KBClient {
         if(params != null) {
             paramStr = ", \"params\": $params}"
         }
-        val jsonString = "{\"jsonrpc\" : \"2.0\", \"method\": \"$nameMethod\", \"id\": 2 ${paramStr}"
+        val jsonString = "{\"jsonrpc\" : \"2.0\", \"method\": \"${nameMethod}\", \"id\": 2 ${paramStr}"
         val body = RequestBody.create(JSON, jsonString)
         val request = Request.Builder()
             .url(serverUrl)
