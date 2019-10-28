@@ -92,14 +92,7 @@ class TaskDetailFragment : Fragment(){
             super.onPostExecute(result)
             val context = activityReference.get()!!
             if (!result.successful || result.conectionError != null) {
-                AlertDialog.Builder(context)
-                    .setMessage("Ocorreu um erro ao tentar consultar quem criou esta tarefa, tente novamente")
-                    .setNeutralButton("Ok") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
-                return
+                updateNameOfCreator("")
             } else {
                 updateNameOfCreator(JSONObject(result.result).toUser().name.toString())
             }

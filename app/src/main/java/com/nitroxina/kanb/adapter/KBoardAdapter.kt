@@ -96,7 +96,6 @@ class KBoardAdapter(context: Context?, data: ArrayList<KBColumn>, private val pr
             true
         }
         popupMenu.show()
-        true
     }
 
     override fun createHeaderView(context: Context?, header_object: Any?, column_position: Int): View {

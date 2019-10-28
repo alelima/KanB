@@ -57,13 +57,13 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
 
     private fun populateView() {
 
-        val dialogTitle = if (task?.title?.isNullOrEmpty()) { getString(R.string.task_new) } else { task?.title }
-        rootView.findViewById<MaterialTextView>(R.id.text_view_title).text = "${task?.project_name} > $dialogTitle"
+        val dialogTitle = if (task.title.isNullOrEmpty()) { getString(R.string.task_new) } else { task.title }
+        rootView.findViewById<MaterialTextView>(R.id.text_view_title).text = "${task.project_name} > $dialogTitle"
 
         val saveButton = rootView.findViewById<MaterialButton>(R.id.save_button)
         saveButton.setOnClickListener {
             populateTask()
-            if(task?.id == null) {
+            if(task.id == null) {
                 createTask()
             } else {
                 updateTask()
@@ -72,17 +72,17 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
             dismiss()
         }
 
-        if(task?.id != null) {
-            rootView.findViewById<TextInputEditText>(R.id.task_title).setText(task!!.title)
-            rootView.findViewById<TextInputEditText>(R.id.task_description).setText(task!!.description)
+        if(task.id != null) {
+            rootView.findViewById<TextInputEditText>(R.id.task_title).setText(task.title)
+            rootView.findViewById<TextInputEditText>(R.id.task_description).setText(task.description)
             rootView.findViewById<MaterialButton>(R.id.color_button).setBackgroundColor(Color.parseColor(
-                TaskColor.hexaBackgroundColorOf(task!!.color_id!!)))
-            rootView.findViewById<TextInputEditText>(R.id.date_start).setText(task!!.date_started)
-            rootView.findViewById<TextInputEditText>(R.id.date_due).setText(task!!.date_due)
-            rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).setText(task!!.time_estimated)
-            rootView.findViewById<TextInputEditText>(R.id.task_time_spent).setText(task!!.time_spent)
-            rootView.findViewById<TextInputEditText>(R.id.task_complexity).setText(task!!.score.toString())
-            rootView.findViewById<TextInputEditText>(R.id.task_reference).setText(task!!.reference)
+                TaskColor.hexaBackgroundColorOf(task.color_id!!)))
+            rootView.findViewById<TextInputEditText>(R.id.date_start).setText(task.date_started)
+            rootView.findViewById<TextInputEditText>(R.id.date_due).setText(task.date_due)
+            rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).setText(task.time_estimated)
+            rootView.findViewById<TextInputEditText>(R.id.task_time_spent).setText(task.time_spent)
+            rootView.findViewById<TextInputEditText>(R.id.task_complexity).setText(task.score.toString())
+            rootView.findViewById<TextInputEditText>(R.id.task_reference).setText(task.reference)
         }
     }
 
@@ -149,12 +149,12 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
         val arrayAdapterCategory = ItemDropdownAdapter(activity!!,
             R.layout.support_simple_spinner_dropdown_item, categoryList as MutableList<ItemDropdown>)
         categoriesDropdown.setAdapter(arrayAdapterCategory)
-        categoriesDropdown.setOnItemClickListener { parent, view, position, id ->
+        categoriesDropdown.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
             categoriesDropdown.setText(selectedItem?.name, false)
-            task?.category_id = selectedItem?.id?.toInt()
+            task.category_id = selectedItem?.id?.toInt()
         }
-        categoriesDropdown.setText(task?.category_name, false)
+        categoriesDropdown.setText(task.category_name, false)
     }
 
     private fun populateAssigneeUsers() {
@@ -166,34 +166,34 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
         val arrayAdapterAssignee = ItemDropdownAdapter(activity!!,
             R.layout.support_simple_spinner_dropdown_item, assigUserList as MutableList<ItemDropdown>)
         assigneeSpinnerDropdown.setAdapter(arrayAdapterAssignee)
-        assigneeSpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
+        assigneeSpinnerDropdown.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.adapter.getItem(position) as ItemDropdown?
             assigneeSpinnerDropdown.setText(selectedItem?.name, false)
-            task?.owner_id = selectedItem?.id?.toInt()
+            task.owner_id = selectedItem?.id?.toInt()
         }
-        assigneeSpinnerDropdown.setText(task?.assignee_name, false)
+        assigneeSpinnerDropdown.setText(task.assignee_name, false)
     }
 
     private fun populatePriorities() {
         val priorities = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-        val arrayAdapterPriority = ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, priorities)
+        val arrayAdapterPriority = ArrayAdapter<String>(requireContext(), R.layout.support_simple_spinner_dropdown_item, priorities)
         val prioritySpinnerDropdown  = rootView.findViewById<MaterialBetterSpinner>(R.id.spinner_priority)
         prioritySpinnerDropdown.setAdapter(arrayAdapterPriority)
-        prioritySpinnerDropdown.setOnItemClickListener { parent, view, position, id ->
+        prioritySpinnerDropdown.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.adapter.getItem(position) as String
             prioritySpinnerDropdown.setText(selectedItem, false)
-            task?.priority = selectedItem.toInt()
+            task.priority = selectedItem.toInt()
         }
-        prioritySpinnerDropdown.setText(task?.priority?.toString(), false)
+        prioritySpinnerDropdown.setText(task.priority?.toString(), false)
     }
 
     private fun createTask() {
         object: AsyncTask<Void, Void, KBResponse>(){
             override fun doInBackground(vararg params: Void?) : KBResponse {
-                val parameters = this@EditTaskDialogFragment.task?.toJsonCreateParameters()
+                val parameters = this@EditTaskDialogFragment.task.toJsonCreateParameters()
                 val kbResponse = KBClient.execute(CREATE_TASK, parameters)
                 if(kbResponse.successful) {
-                    this@EditTaskDialogFragment.task?.id = kbResponse.result
+                    this@EditTaskDialogFragment.task.id = kbResponse.result
                 }
                 return kbResponse
             }
@@ -212,7 +212,7 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
     private fun updateTask() {
         object: AsyncTask<Void, Void, KBResponse>(){
             override fun doInBackground(vararg params: Void?) : KBResponse{
-                val parameters = this@EditTaskDialogFragment.task?.toJsonUpdateParameters()
+                val parameters = this@EditTaskDialogFragment.task.toJsonUpdateParameters()
                 val kbResponse = KBClient.execute(UPDATE_TASK, parameters)
                 if(kbResponse.successful) {
                     if(kbResponse.result?.toBoolean() == false) {
@@ -246,8 +246,8 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
                         val jsonObject = jsonList[i-1] as JSONObject
                         val category = jsonObject.toCategory()
                         this@EditTaskDialogFragment.categoryList.add(category)
-                        if(category.id == this@EditTaskDialogFragment.task?.category_id?.toString()) {
-                            task?.category_name = category.name
+                        if(category.id == this@EditTaskDialogFragment.task.category_id?.toString()) {
+                            task.category_name = category.name
                         }
                     }
                 }
@@ -286,28 +286,30 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
 
     private fun changeColor(button: MaterialButton, colorName: String) {
         button.setBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(colorName)))
-        task?.color_id = colorName
+        task.color_id = colorName
     }
 
     override fun onResume() {
-        val params = dialog!!.window.attributes.apply {
-            width = ViewGroup.LayoutParams.MATCH_PARENT
-            height = ViewGroup.LayoutParams.MATCH_PARENT
+        if(dialog != null && dialog!!.window != null) {
+            val params = dialog!!.window.attributes.apply {
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+            dialog!!.window.attributes = params
         }
-        dialog!!.window.attributes = params
         super.onResume()
     }
 
     private fun populateTask() {
-        task!!.title = rootView.findViewById<TextInputEditText>(R.id.task_title).text.toString()
-        task!!.description = rootView.findViewById<TextInputEditText>(R.id.task_description).text.toString()
-        task!!.date_started = rootView.findViewById<TextInputEditText>(R.id.date_start).text.toString()
-        task!!.date_due = rootView.findViewById<TextInputEditText>(R.id.date_due).text.toString()
-        task!!.time_estimated = rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).text.toString()
-        task!!.time_spent = rootView.findViewById<TextInputEditText>(R.id.task_time_spent).text.toString()
+        task.title = rootView.findViewById<TextInputEditText>(R.id.task_title).text.toString()
+        task.description = rootView.findViewById<TextInputEditText>(R.id.task_description).text.toString()
+        task.date_started = rootView.findViewById<TextInputEditText>(R.id.date_start).text.toString()
+        task.date_due = rootView.findViewById<TextInputEditText>(R.id.date_due).text.toString()
+        task.time_estimated = rootView.findViewById<TextInputEditText>(R.id.task_estimate_hours).text.toString()
+        task.time_spent = rootView.findViewById<TextInputEditText>(R.id.task_time_spent).text.toString()
         val score = rootView.findViewById<TextInputEditText>(R.id.task_complexity).text.toString()
-        task!!.score = if (score.isNumber()) { score.toInt() } else { null }
-        task!!.reference = rootView.findViewById<TextInputEditText>(R.id.task_reference).text.toString()
+        task.score = if (score.isNumber()) { score.toInt() } else { null }
+        task.reference = rootView.findViewById<TextInputEditText>(R.id.task_reference).text.toString()
     }
 
 }

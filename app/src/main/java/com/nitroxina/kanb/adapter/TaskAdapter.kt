@@ -132,14 +132,12 @@ class TaskAdapter(val profile: Profile, var progressBar: ProgressBar) : Recycler
     }
 
     private fun generateInitials() : String {
-        var initials = ""
         val parts = ownerName.split(" ")
-        initials = if(parts.size >= 2) {
+        return if(parts.size >= 2) {
              parts[0].substring(0..0).toUpperCase() + parts[1].substring(0..0).toUpperCase()
         } else {
             ownerName.substring(0..1).toUpperCase()
         }
-        return initials
     }
 
     private fun openTaskForEdition(context: Context, task: Task) {
@@ -180,7 +178,6 @@ class TaskAdapter(val profile: Profile, var progressBar: ProgressBar) : Recycler
             true
         }
         popupMenu.show()
-        true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {

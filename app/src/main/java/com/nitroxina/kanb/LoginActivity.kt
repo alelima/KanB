@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         val serverFromView = findViewById<TextInputEditText>(R.id.server_url).text.toString()
 
         if(usernameFromView.isNullOrBlank() || kbTokenFromView.isNullOrBlank() || serverFromView.isNullOrBlank()) {
-            //mensagem de que é necessário preencher username e token
+            Toast.makeText(this, this.getString(R.string.config_form_fill) ,Toast.LENGTH_SHORT).show()
             return
         } else {
             username = usernameFromView
@@ -133,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
                 sharedPreference.saveEncryption(SharedPreferenceKB.TOKEN, kbToken!!)
                 sharedPreference.save(SharedPreferenceKB.USERNAME, username!!)
                 sharedPreference.save(SharedPreferenceKB.SSL, ssl!!)
-                Toast.makeText(activity,"Configurações e Username salvos",Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, activity.getString(R.string.save_config_confirm) ,Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, MainActivity::class.java)
                 intent.putExtra("profile", profile)
                 activity.startActivity(intent)
@@ -144,9 +144,7 @@ class LoginActivity : AppCompatActivity() {
 
             if (response.conectionError?.exception is SSLHandshakeException) {
                 AlertDialog.Builder(activity)
-                    .setMessage("O Kanboard que você está tentando acessar não possui um certificado instalado no seu dispositivo móvel, " +
-                            "se você confia neste site clique ok senão clique em cancelar. Você pode também procurar " +
-                            "o suporte do site para instalar a cadeia de certificados no seu dispositivo")
+                    .setMessage(activity.getString(R.string.no_certificate))
                     .setNeutralButton("Ok") { dialog, _ ->
                         dialog.dismiss()
                         activity.testCredential(false)
@@ -174,7 +172,7 @@ class LoginActivity : AppCompatActivity() {
     private fun configureAutoHiddenKeyboard() {
         //Esconder o teclado
         val mainContainer = findViewById<ConstraintLayout>(R.id.container)
-        mainContainer.setOnTouchListener { v, event ->
+        mainContainer.setOnTouchListener { _, _ ->
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }

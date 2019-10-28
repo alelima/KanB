@@ -21,7 +21,7 @@ class ProfileFragment : Fragment(){
                               savedInstanceState: Bundle?): View {
         rootView = inflater.inflate(R.layout.profile_layout, null)
         val profile = arguments?.get("profile") as Profile
-        profile?.let { updateView(it) }
+        updateView(profile)
         return rootView
     }
 

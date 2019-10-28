@@ -50,10 +50,15 @@ class SplashActivity : AppCompatActivity() {
 
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-        if (activeNetwork?.isConnected!!)  {
-            //loadProfile()
-        } else {
-            //TODO: dar uma mensagem de que não há internte e fechar o aplicativo
+        if (!activeNetwork?.isConnected!!)  {
+            AlertDialog.Builder(this)
+                .setMessage(this.getString(R.string.standard_no_internet_error))
+                .setNeutralButton("Ok") { dialog, _ ->
+                    this.finish()
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
         }
     }
 
