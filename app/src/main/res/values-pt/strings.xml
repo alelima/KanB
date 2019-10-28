@@ -75,9 +75,10 @@
     <string name="task_opt_edit">Editar</string>
     <string name="task_message_finalize">Deseja mesmo finalizar essa tarefa?</string>
     <string name="save_config_confirm">Configurações de acesso ao Kanboard salvos</string>
-    <string name="no_kanboard_access">Configurações de acesso ao Kanboard salvos</string>
     <string name="config_form_fill">É preciso preencher todo o fomulário de configuração</string>
     <string name="no_certificate">O Kanboard que você está tentando acessar não possui um certificado instalado no seu
     dispositivo móvel, se você confia neste site, clique ok. Você pode também procurar o suporte do site
     para ajudar a instalar a cadeia de certificados no seu dispositivo</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
 </resources>

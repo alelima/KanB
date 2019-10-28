@@ -176,15 +176,17 @@ class EditTaskDialogFragment(var reloadFunction: (()->Unit)? = null) : DialogFra
 
     private fun populatePriorities() {
         val priorities = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-        val arrayAdapterPriority = ArrayAdapter<String>(requireContext(), R.layout.support_simple_spinner_dropdown_item, priorities)
+        val arrayAdapterPriority = ArrayAdapter<String>(requireContext(),
+            R.layout.support_simple_spinner_dropdown_item, priorities)
         val prioritySpinnerDropdown  = rootView.findViewById<MaterialBetterSpinner>(R.id.spinner_priority)
+        var selectedItem = "0"
         prioritySpinnerDropdown.setAdapter(arrayAdapterPriority)
         prioritySpinnerDropdown.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.adapter.getItem(position) as String
+            selectedItem = parent.adapter.getItem(position) as String
             prioritySpinnerDropdown.setText(selectedItem, false)
             task.priority = selectedItem.toInt()
         }
-        prioritySpinnerDropdown.setText(task.priority?.toString(), false)
+        prioritySpinnerDropdown.setText(selectedItem, false)
     }
 
     private fun createTask() {

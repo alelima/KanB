@@ -45,7 +45,11 @@ class TaskDetailFragment : Fragment(){
             cardView.setCardBackgroundColor(Color.parseColor(TaskColor.hexaBackgroundColorOf(task.color_id!!)))
 
             findViewById<TextView>(R.id.task_title).text = task.title
-            findViewById<TextView>(R.id.task_status_value).text = task.is_active
+            findViewById<TextView>(R.id.task_status_value).text = if(task.is_active!!) {
+                getString(R.string.profile_status_active)
+            } else {
+                getString(R.string.profile_status_inactive)
+            }
             findViewById<TextView>(R.id.task_assignee_value).text = task.assignee_name
 
             findViewById<TextView>(R.id.task_priority_value).text = task.priority?.toString()

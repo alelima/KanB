@@ -118,7 +118,7 @@ fun JSONObject.toTask() : Task {
     val description = this.optionString("description")
     val externalProvider = this.optionString("external_provider")
     val externalUri = this.optionString("external_uri")
-    val isActive = this.optionString("is_active")
+    val isActive = this.optBoolean("is_active")
     val ownerId = this.optInt("owner_id")
     val position = this.optionString("position")
     val priority = this.optInt("priority")

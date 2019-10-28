@@ -28,7 +28,7 @@ class Task(
     var description: String? = null,
     val external_provider: String? = null,
     val external_uri: String? = null,
-    val is_active: String? = null,
+    val is_active: Boolean? = null,
     var owner_id: Int? = null,
     var position: String? = null,
     var priority: Int? = null,

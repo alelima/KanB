@@ -11,7 +11,7 @@ data class Board(
             boardResume += if(showOnlyActives) {
                 var count = 0
                 it.tasks.forEach { task ->
-                    if(!task.is_active.isNullOrEmpty() && task.is_active.toBoolean()) {
+                    if(task.is_active!!) {
                         count += 1
                     }
                 }

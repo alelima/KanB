@@ -50,7 +50,7 @@ class BoardFragment : Fragment() {
         project.board!!.swimlanes[0].columns.forEach {
             val list = mutableListOf<Task>()
             it.tasks.forEach { task ->
-                if(!task.is_active.isNullOrEmpty() && task.is_active.toBoolean()) {
+                if(task.is_active!!) {
                     list.add(task)
                 }
             }
